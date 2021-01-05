@@ -15,6 +15,7 @@ import search from '../assets/search.JPG';
 import pin from '../assets/pin.JPG';
 import community from '../assets/community.JPG';
 
+
 export class Landing extends React.Component {
 
     render() {
@@ -35,7 +36,7 @@ export class Landing extends React.Component {
                 w-11/12 sm:w-3/4 md:w-3/5 lg:w-1/2
                 ">
 
-<span className="pl-5 sm:pl-7 ipx:font-bold ">Checking </span>for a secondhand option when you shop is a great way to <span className="text-red-500 font-semibold">get more for your money</span> and <span className="text-lime-600 font-semibold">fight product waste. </span>
+<span className="pl-5 sm:pl-7">Checking </span>for a secondhand option when you shop is a great way to <span className="text-red-500 font-semibold">get more for your money</span> and <span className="text-lime-600 font-semibold">fight product waste. </span>
 And now, you can check all of the top sites and compare them in one place. </p>
 
             <img src={sketch} alt="Sketch by Nicole Miles, depicting 6 types of Loma customers"

@@ -5,6 +5,8 @@ import { SearchBar } from './Components/SearchBar';
 import { Results } from './Components/Results';
 import { Landing } from './Components/Landing';
 import { LoadingPop } from './Components/LoadingPop';
+import { PopUpListing } from './Components/PopUpListing';
+
 
 import imagePlaceholder from './assets/gallery.png';
 
@@ -655,6 +657,8 @@ class App extends React.Component {
     return (
       <div className="App w-screen h-full bg-white">
           <SearchBar onChange={this.handleChange}/>
+          <PopUpListing />
+
           {this.state.landing ? <Landing /> : <p></p >} 
           {this.state.loading ? <p></p> : <Results Data={this.state.Data}
                   resultsDisplay={this.state.resultsDisplay}
