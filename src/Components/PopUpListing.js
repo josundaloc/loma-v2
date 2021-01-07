@@ -46,11 +46,14 @@ export class PopUpListing extends React.Component {
             // LISTING ITSELF 
             <div className="
             bg-gray-900 bg-opacity-70 h-screen w-screen fixed z-10">
-                <div className="h-7 w-7 text-center rounded bg-red-500">+</div>
+                <div className="
+                top-10 right-1/24 sm:right-1/8 lg:right-1/6 absolute
+                h-7 w-7 text-center rounded font-bold bg-red-500 text-white "
+                ><p className="transform rotate-45">+</p></div>
                 <div className="
             bg-white rounded
             mx-auto mt-20
-            h-96 
+            h-96 sm:h-2/3
             se:w-11/12 sm:w-3/4 lg:w-2/3 
             overflow-hidden
             flex flex-col sm:flex-row
@@ -59,6 +62,7 @@ export class PopUpListing extends React.Component {
                 <div className="
                 sm:w-2/3 sm:h-full sm:inline-block
                 h-3/5 psm:h-2/3 w-full
+                bg-black
                 ">
                     <img className="
                     
@@ -75,7 +79,7 @@ export class PopUpListing extends React.Component {
                 sm:inline-block
                 sm:w-1/3 sm:p-2 overflow-auto
                 h-1/2 sm:h-full
-                border-l
+                border-t sm:border-l
                 ">
 
                         <div className="
@@ -113,7 +117,7 @@ export class PopUpListing extends React.Component {
 
 
                             <div className="
-                                -mt-1
+                                sm:-mt-1
                                 sm:block sm:flex-row-reverse flex flex-row flex-nowrap inline-block">
                                 <img className="
                                         inline

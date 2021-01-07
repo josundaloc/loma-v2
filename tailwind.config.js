@@ -31,6 +31,11 @@ module.exports = {
       pink: colors.pink,
     },
     extend: {
+      inset: {
+        '1/6': '16.66%',
+        '1/8': '12.5%',
+        '1/24': '4.17%'
+      },
       screens: {
         se: '315px',
         ipx: '370px',
