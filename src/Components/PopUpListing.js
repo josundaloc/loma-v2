@@ -43,20 +43,25 @@ export class PopUpListing extends React.Component {
     render() {
         return (
 
-            // LISTING ITSELF
+            // LISTING ITSELF 
             <div className="
-            bg-white rounded sm:rounded-lg
-            mx-auto mt-5
+            bg-gray-900 bg-opacity-70 h-screen w-screen fixed z-10">
+                <div className="h-7 w-7 text-center rounded bg-red-500">+</div>
+                <div className="
+            bg-white rounded
+            mx-auto mt-20
             h-96 
-            se:w-11/12 sm:w-3/4 lg:w-2/3 border 
+            se:w-11/12 sm:w-3/4 lg:w-2/3 
             overflow-hidden
             flex flex-col sm:flex-row
+            shadow-md
             ">
                 <div className="
                 sm:w-2/3 sm:h-full sm:inline-block
                 h-3/5 psm:h-2/3 w-full
                 ">
                     <img className="
+                    
                     h-full object-cover 
                     psm:object-contain psm:w-full
                     mx-auto
@@ -69,14 +74,14 @@ export class PopUpListing extends React.Component {
                 <div className="
                 sm:inline-block
                 sm:w-1/3 sm:p-2 overflow-auto
-                bg-red-300
                 h-1/2 sm:h-full
-                
+                border-l
                 ">
 
                         <div className="
-                        h-8 w-full p-0.5
-                        flex flex-row justify-between
+                        w-full p-0.5
+                        flex flex-row justify-between flex-wrap sm:flex-wrap-reverse
+                        inline-block
                         ">
 
                             <div className="
@@ -108,17 +113,20 @@ export class PopUpListing extends React.Component {
 
 
                             <div className="
-                                flex flex-row flex-nowrap">
+                                -mt-1
+                                sm:block sm:flex-row-reverse flex flex-row flex-nowrap inline-block">
                                 <img className="
                                         inline
                                         h-4 m-0.5 mt-1
                                         flex-none 
+                                        h-5
                                         "src={bookmark}  alt=""/> 
 
                                 <img className="
                                         inline
-                                        h-4 mr-1 mt-1
-                                        flex-none 
+                                        h-4 mr-1 mt-1 sm:mt-0.5
+                                        flex-none
+                                        h-5 
                                         "src={heart}  alt=""/> 
                             </div>
 
@@ -127,7 +135,7 @@ export class PopUpListing extends React.Component {
 
                         <p className="
                         m-2 mb-1.5 mt-0
-                        leading-none text-base font-bold sm:text-lg
+                        leading-none text-base font-bold lg:text-lg
                         ">
                             Lorem ipsum dolor sit amet
                         
@@ -135,7 +143,7 @@ export class PopUpListing extends React.Component {
                         <p className="
                         m-2 h-5/12
                         leading-none text-sm
-                        sm:leading-tight sm:text-base
+                        sm:leading-tight lg:text-base
                         ">
                             Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta.
                         
@@ -148,6 +156,7 @@ export class PopUpListing extends React.Component {
             
             </div>
 
+            </div>
         )
     }
 }

@@ -656,8 +656,9 @@ class App extends React.Component {
   render() {
     return (
       <div className="App w-screen h-full bg-white">
-          <SearchBar onChange={this.handleChange}/>
           <PopUpListing />
+          <SearchBar onChange={this.handleChange}/>
+          
 
           {this.state.landing ? <Landing /> : <p></p >} 
           {this.state.loading ? <p></p> : <Results Data={this.state.Data}
