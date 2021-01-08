@@ -22,6 +22,7 @@ export class PopUpListing extends React.Component {
         super(props);
         this.openWindow = this.openWindow.bind(this);
         this.logo = this.logo.bind(this);
+        this.togglePopUp = this.togglePopUp.bind(this);
 
 
     }
@@ -40,27 +41,36 @@ export class PopUpListing extends React.Component {
         window.open(this.props.listing.url);
     }
 
+    togglePopUp() {
+        this.props.togglePopUp(this.props.listing)
+    }
+
     render() {
         if (this.props.display === true) {
             return (
                 <div className="
-                bg-gray-900 bg-opacity-70 h-screen w-screen fixed z-40">
+                bg-coolGray-800 bg-opacity-80 h-screen w-screen fixed z-30"
+                onClick={this.togglePopUp}
+                >
                     <div className="
+                    cursor-pointer
                     top-12 right-1/24 sm:right-1/8 lg:right-1/6 absolute
                     h-6 w-6 text-center rounded bg-red-500"><p className="
                     transform rotate-45 text-white font-extrabold">+</p></div>
                     <div className="
+                z-40 cursor-pointer
                 bg-white rounded
                 mx-auto mt-20
-                h-96 
+                h-2/3
                 se:w-11/12 sm:w-3/4 lg:w-2/3 
                 overflow-hidden
                 flex flex-col sm:flex-row
                 shadow-md
-                ">
+                "
+                onClick={this.openWindow}>
                     <div className="
                     sm:w-2/3 sm:h-full sm:inline-block
-                    h-3/5 psm:h-2/3 w-full
+                    h-3/5 psm:h-2/3 w-full bg-coolGray-700
                     ">
                         <img className="
                         
@@ -69,21 +79,23 @@ export class PopUpListing extends React.Component {
                         mx-auto
                         sm:inline-block sm:justify-center
                         "
-                        src={dummyImage} />
+                        src={this.props.listing.image ? this.props.listing.image : imagePlaceholder} />
                     </div>
                     
     
                     <div className="
                     sm:inline-block
-                    sm:w-1/3 sm:p-2 overflow-auto
+                    sm:w-1/3 overflow-auto
                     h-1/2 sm:h-full
                     border-l
                     ">
     
                             <div className="
-                            w-full p-0.5
+                            w-full p-0.5 sm:p-2
                             flex flex-row justify-between flex-wrap sm:flex-wrap-reverse
                             inline-block
+                            sticky top-0
+                            shadow bg-white
                             ">
     
                                 <div className="
@@ -96,13 +108,13 @@ export class PopUpListing extends React.Component {
                                     font-bold text-sm text-lime-600
                                     bg-lime-50 text-center
                                     flex-grow-0"
-                                >£400</p>
+                                >£{this.props.listing.price}</p>
     
                                 <img className="
                                         inline rounded shadow bg-white
                                         h-5 m-0.5 p-0.5 mt-1
                                         flex-none 
-                                        "src={gumtree}  alt=""/> 
+                                        "src={this.logo()}  alt=""/> 
                                 
                                 <img className="
                                         inline
@@ -115,18 +127,18 @@ export class PopUpListing extends React.Component {
     
     
                                 <div className="
-                                    -mt-1
+                                    -mt-1 
                                     sm:block sm:flex-row-reverse flex flex-row flex-nowrap inline-block">
                                     <img className="
                                             inline
-                                            h-4 m-0.5 mt-1
+                                            h-4 m-0.5 mt-1.5
                                             flex-none 
                                             h-5
                                             "src={bookmark}  alt=""/> 
     
                                     <img className="
                                             inline
-                                            h-4 mr-1 mt-1 sm:mt-0.5
+                                            h-4 mr-1 mt-1.5 sm:mt-0.5
                                             flex-none
                                             h-5 
                                             "src={heart}  alt=""/> 
@@ -136,18 +148,20 @@ export class PopUpListing extends React.Component {
                             </div>
     
                             <p className="
-                            m-2 mb-1.5 mt-0
-                            leading-none text-base font-bold lg:text-lg
+                            bg-warmGray-100 text-warmGray-700
+                            p-2 sm:px-3 mt-0
+                            leading-none text-base font-bold lg:text-lg lg:leading-tight
                             ">
-                                Lorem ipsum dolor sit amet
+                                {this.props.listing.title}
                             
                             </p>
                             <p className="
-                            m-2 h-5/12
-                            leading-none text-sm
-                            sm:leading-tight lg:text-base
+                            p-2 sm:px-3 h-5/12
+                            leading-5 text-sm
+                            lg:text-base lg:leading-5
+                            break-words text-warmGray-800
                             ">
-                                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta.
+                                {this.props.listing.description}
                             
                             </p>
     

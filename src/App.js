@@ -405,7 +405,7 @@ class App extends React.Component {
       if (!listing.hasOwnProperty("image") || !listing.image.hasOwnProperty("imageUrl")) {
         return imagePlaceholder;
       } else {
-        return listing.image.imageUrl;
+        return listing.thumbnailImages[0].imageUrl;
       }
     }
     /////END OF CLEANER FUNCTIONS
@@ -680,7 +680,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App w-screen h-full bg-white">
-          {this.state.popUpListing.display ? <PopUpListing display={this.state.popUpListing.display} listing={this.state.popUpListing.listing}/> : null}
+          {this.state.popUpListing.display ? <PopUpListing display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>
           
 
