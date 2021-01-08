@@ -591,7 +591,7 @@ class App extends React.Component {
         title: listing.title,
         price: listing.price,
         description: listing.description,
-        image: missingImagesFiltered(listing.Images[0].url_170x135),
+        image: missingImagesFiltered(listing.Images[0].url_570xN),
         url: listing.url,
         site: "etsy"
       }
@@ -659,7 +659,6 @@ class App extends React.Component {
   }
 
   togglePopUp(listing) {
-    console.log('popup triggered');
     if (this.state.popUpListing.display === true ) {
       this.setState({
         popUpListing: {
