@@ -23,6 +23,10 @@ class App extends React.Component {
       searchTerm: "",
       loading: false,
       landing: true,
+      popUpListing: {
+        display: false,
+        listing: {}
+      },
       depopData: {
         data: [{nothing : "none"}],
         status: 'unresolved'
@@ -40,6 +44,7 @@ class App extends React.Component {
     this.setData = this.setData.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.reOrderDisplay = this.reOrderDisplay.bind(this);
+    this.togglePopUp = this.togglePopUp.bind(this);
   }
 
   componentDidMount() {
@@ -652,20 +657,40 @@ class App extends React.Component {
     this.setData(searchQuery);
 
   }
+
+  togglePopUp(listing) {
+    console.log('popup triggered');
+    if (this.state.popUpListing.display === true ) {
+      this.setState({
+        popUpListing: {
+          display: false,
+          listing: {}
+        }
+      })
+    } else {
+      this.setState({
+        popUpListing: {
+          display: true,
+          listing: listing
+        }
+      })
+  }
+} 
   
   render() {
     return (
       <div className="App w-screen h-full bg-white">
-          <PopUpListing />
+          {this.state.popUpListing.display ? <PopUpListing display={this.state.popUpListing.display} listing={this.state.popUpListing.listing}/> : null}
           <SearchBar onChange={this.handleChange}/>
           
 
-          {this.state.landing ? <Landing /> : <p></p >} 
-          {this.state.loading ? <p></p> : <Results Data={this.state.Data}
+          {this.state.landing ? <Landing /> : null } 
+          {this.state.loading ? null : <Results Data={this.state.Data}
                   resultsDisplay={this.state.resultsDisplay}
                   toggleResults={this.toggleDisplay}
                   searchTerm={this.state.searchTerm}
                   search={this.handleChange}
+                  togglePopUp={this.togglePopUp}
                   />}
          
           {this.state.loading ? <LoadingPop /> : <p></p>}

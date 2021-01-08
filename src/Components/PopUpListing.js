@@ -41,126 +41,128 @@ export class PopUpListing extends React.Component {
     }
 
     render() {
-        return (
-
-            // LISTING ITSELF 
-            <div className="
-            bg-gray-900 bg-opacity-70 h-screen w-screen fixed z-10">
+        if (this.props.display === true) {
+            return (
                 <div className="
-                top-10 right-1/24 sm:right-1/8 lg:right-1/6 absolute
-                h-7 w-7 text-center rounded font-bold bg-red-500 text-white "
-                ><p className="transform rotate-45">+</p></div>
-                <div className="
-            bg-white rounded
-            mx-auto mt-20
-            h-96 sm:h-2/3
-            se:w-11/12 sm:w-3/4 lg:w-2/3 
-            overflow-hidden
-            flex flex-col sm:flex-row
-            shadow-md
-            ">
-                <div className="
-                sm:w-2/3 sm:h-full sm:inline-block
-                h-3/5 psm:h-2/3 w-full
-                bg-black
+                bg-gray-900 bg-opacity-70 h-screen w-screen fixed z-40">
+                    <div className="
+                    top-12 right-1/24 sm:right-1/8 lg:right-1/6 absolute
+                    h-6 w-6 text-center rounded bg-red-500"><p className="
+                    transform rotate-45 text-white font-extrabold">+</p></div>
+                    <div className="
+                bg-white rounded
+                mx-auto mt-20
+                h-96 
+                se:w-11/12 sm:w-3/4 lg:w-2/3 
+                overflow-hidden
+                flex flex-col sm:flex-row
+                shadow-md
                 ">
-                    <img className="
+                    <div className="
+                    sm:w-2/3 sm:h-full sm:inline-block
+                    h-3/5 psm:h-2/3 w-full
+                    ">
+                        <img className="
+                        
+                        h-full object-cover 
+                        psm:object-contain psm:w-full
+                        mx-auto
+                        sm:inline-block sm:justify-center
+                        "
+                        src={dummyImage} />
+                    </div>
                     
-                    h-full object-cover 
-                    psm:object-contain psm:w-full
-                    mx-auto
-                    sm:inline-block sm:justify-center
-                    "
-                    src={dummyImage} />
-                </div>
-                
-
-                <div className="
-                sm:inline-block
-                sm:w-1/3 sm:p-2 overflow-auto
-                h-1/2 sm:h-full
-                border-t sm:border-l
-                ">
-
-                        <div className="
-                        w-full p-0.5
-                        flex flex-row justify-between flex-wrap sm:flex-wrap-reverse
-                        inline-block
-                        ">
-
+    
+                    <div className="
+                    sm:inline-block
+                    sm:w-1/3 sm:p-2 overflow-auto
+                    h-1/2 sm:h-full
+                    border-l
+                    ">
+    
                             <div className="
-                            flex flex-row flex-nowrap
+                            w-full p-0.5
+                            flex flex-row justify-between flex-wrap sm:flex-wrap-reverse
+                            inline-block
                             ">
-
-                            <p className="
-                                inline
-                                px-1 m-1 rounded-sm shadow
-                                font-bold text-sm text-lime-600
-                                bg-lime-50 text-center
-                                flex-grow-0"
-                            >£400</p>
-
-                            <img className="
-                                    inline rounded shadow bg-white
-                                    h-5 m-0.5 p-0.5 mt-1
-                                    flex-none 
-                                    "src={gumtree}  alt=""/> 
-                            
-                            <img className="
+    
+                                <div className="
+                                flex flex-row flex-nowrap
+                                ">
+    
+                                <p className="
                                     inline
-                                    h-4 m-0.5 p-0.5 mt-1.5
-                                    flex-none 
-                                    "src={link}  alt=""/> 
-
-                            </div>
-
-
-
-                            <div className="
-                                sm:-mt-1
-                                sm:block sm:flex-row-reverse flex flex-row flex-nowrap inline-block">
+                                    px-1 m-1 rounded-sm shadow
+                                    font-bold text-sm text-lime-600
+                                    bg-lime-50 text-center
+                                    flex-grow-0"
+                                >£400</p>
+    
                                 <img className="
-                                        inline
-                                        h-4 m-0.5 mt-1
+                                        inline rounded shadow bg-white
+                                        h-5 m-0.5 p-0.5 mt-1
                                         flex-none 
-                                        h-5
-                                        "src={bookmark}  alt=""/> 
-
+                                        "src={gumtree}  alt=""/> 
+                                
                                 <img className="
                                         inline
-                                        h-4 mr-1 mt-1 sm:mt-0.5
-                                        flex-none
-                                        h-5 
-                                        "src={heart}  alt=""/> 
+                                        h-4 m-0.5 p-0.5 mt-1.5
+                                        flex-none 
+                                        "src={link}  alt=""/> 
+    
+                                </div>
+    
+    
+    
+                                <div className="
+                                    -mt-1
+                                    sm:block sm:flex-row-reverse flex flex-row flex-nowrap inline-block">
+                                    <img className="
+                                            inline
+                                            h-4 m-0.5 mt-1
+                                            flex-none 
+                                            h-5
+                                            "src={bookmark}  alt=""/> 
+    
+                                    <img className="
+                                            inline
+                                            h-4 mr-1 mt-1 sm:mt-0.5
+                                            flex-none
+                                            h-5 
+                                            "src={heart}  alt=""/> 
+                                </div>
+    
+    
                             </div>
-
-
-                        </div>
-
-                        <p className="
-                        m-2 mb-1.5 mt-0
-                        leading-none text-base font-bold lg:text-lg
-                        ">
-                            Lorem ipsum dolor sit amet
-                        
-                        </p>
-                        <p className="
-                        m-2 h-5/12
-                        leading-none text-sm
-                        sm:leading-tight lg:text-base
-                        ">
-                            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta.
-                        
-                        </p>
-
-                </div>
+    
+                            <p className="
+                            m-2 mb-1.5 mt-0
+                            leading-none text-base font-bold lg:text-lg
+                            ">
+                                Lorem ipsum dolor sit amet
+                            
+                            </p>
+                            <p className="
+                            m-2 h-5/12
+                            leading-none text-sm
+                            sm:leading-tight lg:text-base
+                            ">
+                                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta.
+                            
+                            </p>
+    
+                    </div>
+                    
+    
                 
+                
+                </div>
+    
+                </div>
+            )
+        } else {
+            return null;
+        }
 
-            
-            
-            </div>
-
-            </div>
-        )
     }
 }

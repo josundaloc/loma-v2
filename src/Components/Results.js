@@ -55,7 +55,7 @@ export class Results extends React.Component {
                     
                     {this.props.Data.map(
                         (listing) => {
-                            return <Listing listing={listing}/>
+                            return <Listing togglePopUp={this.props.togglePopUp} listing={listing}/>
                         }
                     )}
             

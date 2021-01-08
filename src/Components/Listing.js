@@ -19,6 +19,7 @@ export class Listing extends React.Component {
         super(props);
         this.openWindow = this.openWindow.bind(this);
         this.logo = this.logo.bind(this);
+        this.togglePopUp = this.togglePopUp.bind(this);
 
 
     }
@@ -37,6 +38,10 @@ export class Listing extends React.Component {
         window.open(this.props.listing.url);
     }
 
+    togglePopUp() {
+        this.props.togglePopUp(this.props.listing);
+    }
+
     render() {
         return (
 
@@ -49,8 +54,9 @@ export class Listing extends React.Component {
             flex flex-wrap flex-col justify-center
             cursor-pointer
             relative
-
-            " listing={this.props.listing} onClick={this.openWindow}>
+            "
+            listing={this.props.listing} 
+            >
 
                     {/* IMAGE THUMBNAIL */}
                     <img className="
@@ -65,7 +71,8 @@ export class Listing extends React.Component {
                     {/* OVERLAY */}
                     <div className="
                     se:h-40 se:w-40 ipx:h-44 ipx:w-44 sm:h-52 sm:w-52 
-                    flex flex-col justify-between absolute z-20">
+                    flex flex-col justify-between absolute z-20"
+                    onClick={this.togglePopUp}>
                         {/* HEART */}
                         <div className="
                         
