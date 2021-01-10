@@ -702,7 +702,7 @@ changeActiveListing(listing, direction) {
   
   render() {
     return (
-      <div className="App w-100 h-full bg-white overflow-x-hidden">
+      <div className="App w-100 h-full bg-white overflow-x-hidden z-0">
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>
           
