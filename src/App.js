@@ -45,6 +45,7 @@ class App extends React.Component {
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.reOrderDisplay = this.reOrderDisplay.bind(this);
     this.togglePopUp = this.togglePopUp.bind(this);
+    this.changeActiveListing = this.changeActiveListing.bind(this);
   }
 
   componentDidMount() {
@@ -675,11 +676,34 @@ class App extends React.Component {
       })
   }
 } 
+changeActiveListing(listing, direction) {
+    let currentActiveListingIndex = this.state.Data.indexOf(listing);
+
+    if (direction === "next") {
+      this.setState((prevState) => ({
+        popUpListing: {
+          display: true,
+          listing: prevState.Data[currentActiveListingIndex + 1]
+        }
+      }))
+    } else if (direction === "previous" && currentActiveListingIndex > 0) {
+      this.setState((prevState) => ({
+        popUpListing: {
+          display: true,
+          listing: prevState.Data[currentActiveListingIndex - 1]
+        }
+      }))
+    } else {
+      return;
+    }
+    
+
+  }
   
   render() {
     return (
-      <div className="App w-screen h-full bg-white">
-          {this.state.popUpListing.display ? <PopUpListing display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
+      <div className="App w-100 h-full bg-white overflow-x-hidden">
+          {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>
           
 

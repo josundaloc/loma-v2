@@ -23,8 +23,29 @@ export class PopUpListing extends React.Component {
         this.openWindow = this.openWindow.bind(this);
         this.logo = this.logo.bind(this);
         this.togglePopUp = this.togglePopUp.bind(this);
+        this.nextListing = this.nextListing.bind(this);
+        this.previousListing = this.previousListing.bind(this);
 
 
+    }
+
+    componentDidMount() {
+
+ 
+        const handleNext = (e) => {
+            console.log("keypress detected")
+            if (e.keyCode === 39) {
+                this.nextListing() 
+            } else if (e.keyCode === 37) {
+                this.previousListing()
+            } else if (e.keyCode === 27 && this.props.display === true) {
+                this.togglePopUp()
+            } else {
+                return
+            }
+        }
+
+        document.addEventListener("keydown", handleNext);
     }
 
     logo() {
@@ -45,14 +66,25 @@ export class PopUpListing extends React.Component {
         this.props.togglePopUp(this.props.listing)
     }
 
+    nextListing() {
+        this.props.changeActiveListing(this.props.listing, "next");
+    }
+
+    previousListing() {
+        this.props.changeActiveListing(this.props.listing, "previous");
+    }
+
     render() {
         if (this.props.display === true) {
             return (
-                <div className="
+                <div 
+                className="
                 bg-coolGray-800 bg-opacity-80 h-screen w-screen fixed z-30"
                 onClick={this.togglePopUp}
                 >
-                    <div className="
+                    <div
+                    onClick={this.togglePopUp}
+                    className="
                     cursor-pointer
                     top-12 right-1/24 sm:right-1/8 lg:right-1/6 absolute
                     h-6 w-6 text-center rounded bg-red-500"><p className="
@@ -67,7 +99,7 @@ export class PopUpListing extends React.Component {
                 flex flex-col sm:flex-row
                 shadow-md
                 "
-                onClick={this.openWindow}>
+                onClick={this.nextListing}>
                     <div className="
                     sm:w-2/3 sm:h-full sm:inline-block
                     h-3/5 psm:h-2/3 w-full bg-coolGray-700
