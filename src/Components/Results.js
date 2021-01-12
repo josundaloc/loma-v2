@@ -11,7 +11,8 @@ export class Results extends React.Component {
     }
 
     toggleResults() {
-        this.props.toggleResults(document.getElementById("sort").value);
+        console.log(`${document.getElementById("sort").value} selected`)
+        this.props.reOrderDisplay(document.getElementById("sort").value);
     }
 
     resultsBar() {
@@ -34,8 +35,8 @@ export class Results extends React.Component {
                     className="h-7 mt-2 mb-2
                     text-xs border rounded text-center border-gray-500">
                         <option value="⚡️ Trending ⚡️">⚡️ Trending ⚡️</option>
-                        <option value="Highest price first ▲">Highest price first ▲</option>
-                        <option value="Lowest price first ▼">Lowest price first ▼</option>
+                        <option value="Lowest price first ▲">Lowest price first ▲</option>
+                        <option value="Highest price first ▼">Highest price first ▼</option>
                     </select>
 
 
