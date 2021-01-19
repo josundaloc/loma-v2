@@ -39,7 +39,7 @@ export class PopUpSearchSettings extends React.Component {
                     <div
                     className="
                     fixed z-40 rounded-l-lg right-0 p-1.5 px-2
-                    bg-white w-64 h-5/6"
+                    bg-white w-64 h-full"
                     >
 
                         <div
@@ -61,7 +61,7 @@ export class PopUpSearchSettings extends React.Component {
 
                         <div
                         className="
-                        flex flex-row justify-center
+                        flex flex-row justify-center 
                         "
                         >
                             <input 
@@ -70,15 +70,16 @@ export class PopUpSearchSettings extends React.Component {
                             className="
                             text-center text-sm
                             overflow-hidden
-                            border m-1 rounded p-1 mx-2
+                            border my-1 rounded-md p-1
                             h-8 w-full"></input>
                         </div>
                         
                         <div
-                        className="
+                        className="my-1.5
                         flex flex-row justify-between">
                             <h3
                             className="
+                            text-gray-600
                             font-bold p-1">Grid view:</h3>
 
                             <select className="
@@ -94,9 +95,10 @@ export class PopUpSearchSettings extends React.Component {
 
                         <div
                         className="
-                        flex flex-row justify-between">
+                        flex flex-row justify-between my-1.5">
                             <h3
                             className="
+                            text-gray-600
                             font-bold p-1">Sort:</h3>
 
                             <select className="
@@ -110,10 +112,11 @@ export class PopUpSearchSettings extends React.Component {
                         </div>
 
                         <div
-                        className="
+                        className="my-1.5
                         flex flex-row flex-wrap">
                             <h3
                             className="
+                            text-gray-600
                             font-bold p-1">Price range:</h3>
 
                             <div className="w-full m-4 p-1">
@@ -130,6 +133,7 @@ export class PopUpSearchSettings extends React.Component {
                         <div className="">
                             <h3
                             className="
+                            text-gray-600
                             font-bold p-1">Sites:</h3>
 
                             <div className="w-full p-1 mb-8">

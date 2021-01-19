@@ -29,7 +29,7 @@ class App extends React.Component {
         listing: {}
       },
       popUpSearchSettings: {
-        display: true,
+        display: false,
       },
       depopData: {
         data: [{nothing : "none"}],
@@ -707,7 +707,7 @@ changeActiveListing(listing, direction) {
   render() {
     return (
       <div className="App w-100 h-full bg-white overflow-x-hidden z-0">
-          {this.state.popUpSearchSettings ? <PopUpSearchSettings /> : null}
+          {this.state.popUpSearchSettings.display ? <PopUpSearchSettings /> : null}
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>
           

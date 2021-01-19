@@ -1,13 +1,13 @@
 import React from 'react';
 //import './Results.css';
 import { Listing } from './Listing';
+import grid from '../assets/grid.svg';
 
 export class Results extends React.Component {
     // eslint-disable-next-line no-useless-constructor
     constructor(props) {
         super(props);
         this.toggleResults = this.toggleResults.bind(this);
-        this.resultsBar = this.resultsBar.bind(this);
     }
 
     toggleResults() {
@@ -15,42 +15,29 @@ export class Results extends React.Component {
         this.props.reOrderDisplay(document.getElementById("sort").value);
     }
 
-    resultsBar() {
-        if (this.props.searchTerm) {
-            return (
-                <div className="flex justify-center">
-                    <p className="inline-block 
-                                    text-left
-                                    h-4 mt-2.5 
-                                    p-1 pr-3 
-                                    text-xs">
-                                    {`Results for ${this.props.searchTerm}`}
-                    </p>
-                    {/* <button onClick={this.toggleResults} className=" inline-block
-                             border border-gray-500 text-xs my-2 p-1 px-2 rounded">
-                            {this.props.resultsDisplay}
-                    </button> */}
-                    
-                    <select id="sort" onChange={this.toggleResults}
-                    className="h-7 mt-2 mb-2
-                    text-xs border rounded text-center border-gray-500">
-                        <option value="⚡️ Trending ⚡️">⚡️ Trending ⚡️</option>
-                        <option value="Lowest price first ▲">Lowest price first ▲</option>
-                        <option value="Highest price first ▼">Highest price first ▼</option>
-                    </select>
-
-
-                </div>
-            )
-        } else {
-            return
-        }
-    }
-
     render() {
         return (
         <div className="">
-            {this.resultsBar()}
+            <div
+            className="
+            w-full bg-red-100 flex flex-row my-2
+            ">
+            <button
+            className=" flex flex-row
+            bg-gray-100 text-gray-500 rounded-md p-2 mx-1.5 leading-none align-middle px
+            text-xs"><img className="h-4 mr-1 my-auto" src={grid}></img>Images + Description</button>
+
+            <button
+            className=" flex flex-row
+            bg-gray-100 text-gray-500 font-bold rounded-md p-2
+            text-xs"><img className="h-4 mr-1" src={grid}></img>Images + Description</button>
+
+            <button
+            className=" flex flex-row
+            bg-gray-100 text-gray-500 font-bold rounded-md p-2
+            text-xs"><img className="h-4 mr-1" src={grid}></img>Images + Description</button>
+            </div>
+
             <div className="results
                     w-full flex flex-wrap justify-center">
                     
@@ -59,10 +46,6 @@ export class Results extends React.Component {
                             return <Listing togglePopUp={this.props.togglePopUp} listing={listing}/>
                         }
                     )}
-            
-
-
-
             </div>
             
         </div>
