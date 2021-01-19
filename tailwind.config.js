@@ -33,6 +33,9 @@ module.exports = {
       pink: colors.pink,
     },
     extend: {
+      fontSize: {
+        'xxs': '.62rem'
+      },
       spacing: {
         '1/8': '12.5%',
         '4/9': '44.44%'
@@ -58,7 +61,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+     
+    },
   },
   plugins: [
     require('@jinsung.lim/tailwindcss-filters'),

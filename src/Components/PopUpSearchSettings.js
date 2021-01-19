@@ -7,15 +7,9 @@ import depop from '../assets/depop.png';
 import ebay from '../assets/ebay.png';
 import gumtree from '../assets/gumtree.png';
 import facebook from '../assets/facebook.png';
-import imagePlaceholder from '../assets/gallery.png'; 
 import etsy from '../assets/Etsy.png'; 
 import trashnothing from '../assets/Freecycle.png';
 
-import heart from '../assets/heart.png';
-import dummyImage from '../assets/dummyimage.jpg';
-import link from '../assets/link.png';
-import bookmark from '../assets/bookmark.png';
-import next from '../assets/next.svg';
 //import './Listing.css';
 
 export class PopUpSearchSettings extends React.Component {
@@ -23,7 +17,7 @@ export class PopUpSearchSettings extends React.Component {
         super(props);
         this.state = {
             value: { min: 200, max: 600 },
-          };
+        };
     }
     render() {
             return (
@@ -51,6 +45,7 @@ export class PopUpSearchSettings extends React.Component {
                                 ">Search Settings</h3>
 
                             <button
+                            onClick={this.props.toggleSearchSettings}
                             className="
                             h-6 w-6 rounded bg-red-200
                             ">

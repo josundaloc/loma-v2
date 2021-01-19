@@ -21,6 +21,9 @@ class App extends React.Component {
       AccessToken: "none",
       ExpiryDate: 0,
       resultsDisplay: "⚡️ Trending ⚡️",
+      filters: {
+
+      },
       searchTerm: "",
       loading: false,
       landing: true,
@@ -49,6 +52,7 @@ class App extends React.Component {
     this.reOrderDisplay = this.reOrderDisplay.bind(this);
     this.togglePopUp = this.togglePopUp.bind(this);
     this.changeActiveListing = this.changeActiveListing.bind(this);
+    this.toggleSearchSettings = this.toggleSearchSettings.bind(this);
   }
 
   componentDidMount() {
@@ -680,6 +684,14 @@ const setTrashNothingData = async () => {
   }
 } 
 
+toggleSearchSettings() {
+  this.setState((prevState) => ({
+    popUpSearchSettings: {
+      display: !prevState.popUpSearchSettings.display
+    }
+  }))
+} 
+
 changeActiveListing(listing, direction) {
     let currentActiveListingIndex = this.state.Data.indexOf(listing);
 
@@ -707,7 +719,7 @@ changeActiveListing(listing, direction) {
   render() {
     return (
       <div className="App w-100 h-full bg-white overflow-x-hidden z-0">
-          {this.state.popUpSearchSettings.display ? <PopUpSearchSettings /> : null}
+          {this.state.popUpSearchSettings.display ? <PopUpSearchSettings toggleSearchSettings={this.toggleSearchSettings}/> : null}
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>
           
@@ -719,6 +731,7 @@ changeActiveListing(listing, direction) {
                   searchTerm={this.state.searchTerm}
                   search={this.handleChange}
                   togglePopUp={this.togglePopUp}
+                  toggleSearchSettings={this.toggleSearchSettings}
                   />}
          
           {this.state.loading ? <LoadingPop /> : <p></p>}

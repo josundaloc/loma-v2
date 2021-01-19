@@ -110,7 +110,7 @@ export class SearchBar extends React.Component {
                         <p
                         className="
                         m-1 pt-0
-                        text-xs italic text-gray-500 text-center"
+                        text-xxs italic text-gray-500 text-center"
                         >You are using the beta version. For the full version, <a href="https://tally.so/r/KnPxbn" rel="noopener noreferrer" target="blank" className="text-green-700">click here.</a></p>
             </div>
         )
