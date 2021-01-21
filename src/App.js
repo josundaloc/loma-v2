@@ -22,7 +22,19 @@ class App extends React.Component {
       ExpiryDate: 0,
       resultsDisplay: "⚡️ Trending ⚡️",
       filters: {
-
+        sites: {
+          ebay: true,
+          trashnothing: true,
+          etsy: true,
+          facebook: true,
+          gumtree: true,
+          depop: true,
+        },
+        range: {
+          min: 0,
+          max: 100000000,
+        },
+        maxResultPrice: 1000
       },
       searchTerm: "",
       loading: false,
@@ -51,8 +63,10 @@ class App extends React.Component {
     this.setData = this.setData.bind(this);
     this.reOrderDisplay = this.reOrderDisplay.bind(this);
     this.togglePopUp = this.togglePopUp.bind(this);
+    this.toggleLanding = this.toggleLanding.bind(this);
     this.changeActiveListing = this.changeActiveListing.bind(this);
     this.toggleSearchSettings = this.toggleSearchSettings.bind(this);
+    this.setFilter = this.setFilter.bind(this);
   }
 
   componentDidMount() {
@@ -248,6 +262,16 @@ class App extends React.Component {
     
   } //COMPONENT MOUNT ENDS
 
+  async setFilter(newFilter, newDisplay, newSearch) {
+    await this.setState({
+      resultsDisplay: newDisplay,
+      filters: newFilter, 
+      searchTerm: newSearch,
+    });
+
+      this.setData();
+  }
+
   toggleLanding() {
     this.setState({
       landing: true,
@@ -424,7 +448,7 @@ const setEbayData = async () => {
   };   
 
   
-  const ebayresponse = await fetch(`https://loma-cors.herokuapp.com/https://api.ebay.com/buy/browse/v1/item_summary/search?q=${searchQuery}&limit=200&filter=conditions:{UNSPECIFIED|USED},itemLocationCountry:GB&fieldgroups=EXTENDED`, ebayrequestOptions);
+  const ebayresponse = await fetch(`https://loma-cors.herokuapp.com/https://api.ebay.com/buy/browse/v1/item_summary/search?q=${searchQuery}&limit=200&filter=price:[${this.state.filters.range.min}..${this.state.filters.range.max}],priceCurrency:GBP,conditions:{UNSPECIFIED|USED},itemLocationCountry:GB&fieldgroups=EXTENDED`, ebayrequestOptions);
   const jsonresponse = await ebayresponse.json();
   const ebayDataParsed = () => {
     if (jsonresponse.itemSummaries) {
@@ -454,9 +478,13 @@ const setDepopData = async () => {
     const depopResponse = await fetch(depop_url);
     const depopData = await depopResponse.json();
     const depopDataFiltered = depopData.filter( (listing) => {
-      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm)) {
+      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
-      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm)) {
+      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
       } else {
         return false;
@@ -483,13 +511,17 @@ const setDepopData = async () => {
       }
     });
 
-    this.setState(prevState => ({Data: [...prevState.Data,...depopDataParsed]}));
+    this.setState(prevState => ({loading: false, Data: [...prevState.Data,...depopDataParsed]}));
 
   } else if (this.state.depopData.status === "resolved") {
     const depopDataFiltered = this.state.depopData.data.filter((listing) => {
-      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm)) {
+      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
+          listing.price >= this.state.filters.range.min &&
+          listing.price <= this.state.filters.range.max) {
         return true;
-      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm)) {
+      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
       } else {
         return false;
@@ -506,8 +538,19 @@ const setGumtreeData = async () => {
     const gumtree_url = "https://api.apify.com/v2/datasets/Dh5XzAb9fvidWw285/items?format=json&clean=1"
     const gumtreeResponse = await fetch(gumtree_url);
     const gumtreeData = await gumtreeResponse.json();
-    const gumtreeDataFiltered = gumtreeData.filter( listing =>
-      listing.title.toLowerCase().includes(this.state.searchTerm) || listing.description.toLowerCase().includes(this.state.searchTerm));
+    const gumtreeDataFiltered = gumtreeData.filter( (listing) => {
+      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
+        return true;
+      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
+        return true;
+      } else {
+        return false;
+      }
+    })
 
     const gumtreeDataParsed = gumtreeDataFiltered.map(
       listing => {
@@ -529,18 +572,22 @@ const setGumtreeData = async () => {
       }
     });
 
-    this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...gumtreeDataFiltered])}));
+    this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...gumtreeDataFiltered])}));
 
   } else {
-    const gumtreeDataFiltered = this.state.gumtreeData.data.filter((listing) => {
-      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm)) {
+    const gumtreeDataFiltered = this.state.gumtreeData.data.filter( (listing) => {
+      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
-      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm)) {
+      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
       } else {
         return false;
       }
-    });
+    })
     this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...gumtreeDataFiltered])}));
     
   }
@@ -553,8 +600,19 @@ const setFacebookData = async () => {
     const facebook_url = "https://api.apify.com/v2/datasets/IitkxYE95yydtzFlk/items?clean=true&format=json"
     const facebookResponse = await fetch(facebook_url);
     const facebookData = await facebookResponse.json();
-    const facebookDataFiltered = facebookData.filter( listing =>
-      listing.title.toLowerCase().includes(searchQuery || listing.description.toLowerCase().includes(searchQuery)));
+    const facebookDataFiltered = facebookData.filter( (listing) => {
+      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
+        return true;
+      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
+        return true;
+      } else {
+        return false;
+      }
+    })
 
     const facebookDataParsed = facebookDataFiltered.map(
       listing => {
@@ -576,24 +634,28 @@ const setFacebookData = async () => {
       }
     });
     
-    this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...facebookDataFiltered])}));
+    this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...facebookDataFiltered])}));
   } else {
-    const facebookDataFiltered = this.state.facebookData.data.filter((listing) => {
-      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm)) {
+    const facebookDataFiltered = this.state.facebookData.data.filter( (listing) => {
+      if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
-      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm)) {
+      } else if (isNull(listing.description).toLowerCase().includes(this.state.searchTerm) && 
+      listing.price >= this.state.filters.range.min &&
+      listing.price <= this.state.filters.range.max) {
         return true;
       } else {
         return false;
       }
-    });
+    })
     this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...facebookDataFiltered])}));
   }
 }
 
 const setEtsyData = async () => {
 
-  const etsyRaw = await fetch(`https://loma-cors.herokuapp.com/https://openapi.etsy.com/v2/listings/active?keywords=${searchQuery}&tags=vintage&limit=200&region=GB&api_key=sh1n3isgj6bax7eotlor7m4s&includes=Images`);
+  const etsyRaw = await fetch(`https://loma-cors.herokuapp.com/https://openapi.etsy.com/v2/listings/active?keywords=${searchQuery}&tags=vintage&limit=200&location=UK&api_key=sh1n3isgj6bax7eotlor7m4s&includes=Images&min_price=${this.state.filters.range.min}&max_price=${this.state.filters.range.max}&sort_on=score&sort_order=down`);
   const etsyJson = await etsyRaw.json();
   const etsyDataResults = etsyJson.results;
   const etsyData = etsyDataResults.map( listing => {
@@ -607,7 +669,7 @@ const setEtsyData = async () => {
     }
   });
 
-  this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...etsyData])}));
+  this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...etsyData])}));
 }
 
 const setTrashNothingData = async () => {
@@ -626,7 +688,7 @@ const setTrashNothingData = async () => {
     }
   });
 
-  this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...trashNothingData])}));
+  this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...trashNothingData])}));
 }
 
 ///>Data calls
@@ -649,15 +711,29 @@ const setTrashNothingData = async () => {
   ///>Preliminary checks
 
   ///<The Timeline
-  setEbayData();
-  setDepopData();
-  setGumtreeData();
-  setFacebookData();
-  setEtsyData();
-  setTrashNothingData();
+  if (this.state.filters.sites.ebay) {
+    setEbayData();
+  }
 
+  if (this.state.filters.sites.depop) {
+    setDepopData();
+  }
 
+  if (this.state.filters.sites.gumtree) {
+    setGumtreeData();
+  }
 
+  if (this.state.filters.sites.facebook) {
+    setFacebookData();
+  }
+
+  if (this.state.filters.sites.etsy) {
+    setEtsyData();
+  }
+
+  if (this.state.filters.sites.trashnothing) {
+    setTrashNothingData();
+  }
   }
 
   handleChange(searchQuery) {
@@ -684,12 +760,40 @@ const setTrashNothingData = async () => {
   }
 } 
 
-toggleSearchSettings() {
-  this.setState((prevState) => ({
+async toggleSearchSettings() {
+  await this.setState((prevState) => ({
     popUpSearchSettings: {
       display: !prevState.popUpSearchSettings.display
     }
   }))
+
+
+  const setMaxResultPrice = async () => {
+    function highest( a, b ) {
+      if ( Number(a.price) < Number(b.price) ){
+        return 1;
+      }
+      if ( Number(a.price) > Number(b.price) ){
+        return -1;
+      }
+      return 0;
+    }
+    let array = this.state.Data.sort(highest);
+    let highestPrice = array[0].price
+
+    await this.setState({
+      filters: {
+        maxResultPrice: highestPrice
+      }
+    })
+
+    console.log(this.state.filters.maxResultPrice);
+  }
+
+  if (this.state.popUpSearchSettings.display === true) {
+    setMaxResultPrice();
+  }
+  
 } 
 
 changeActiveListing(listing, direction) {
@@ -719,13 +823,20 @@ changeActiveListing(listing, direction) {
   render() {
     return (
       <div className="App w-100 h-full bg-white overflow-x-hidden z-0">
-          {this.state.popUpSearchSettings.display ? <PopUpSearchSettings toggleSearchSettings={this.toggleSearchSettings}/> : null}
+          {this.state.popUpSearchSettings.display ? 
+            <PopUpSearchSettings 
+              toggleSearchSettings={this.toggleSearchSettings} 
+              filters={this.state.filters}
+              searchTerm={this.state.searchTerm}
+              setFilter={this.setFilter}
+              display={this.state.resultsDisplay}
+              /> : null}
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>
           
 
           {this.state.landing ? <Landing /> : null } 
-          {this.state.loading ? null : <Results Data={this.state.Data}
+          {this.state.loading ? null: <Results Data={this.state.Data}
                   resultsDisplay={this.state.resultsDisplay}
                   reOrderDisplay={this.reOrderDisplay} 
                   searchTerm={this.state.searchTerm}
@@ -734,7 +845,7 @@ changeActiveListing(listing, direction) {
                   toggleSearchSettings={this.toggleSearchSettings}
                   />}
          
-          {this.state.loading ? <LoadingPop /> : <p></p>}
+          {this.state.loading ? <LoadingPop /> : null}
   
       </div>
     );

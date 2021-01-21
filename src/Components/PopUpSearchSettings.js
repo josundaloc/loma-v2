@@ -16,7 +16,7 @@ export class PopUpSearchSettings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: { min: 200, max: 600 },
+            value: { min: this.props.filters.maxResultPrice/6, max: this.props.filters.maxResultPrice/1.5 },
         };
     }
     render() {
@@ -25,6 +25,7 @@ export class PopUpSearchSettings extends React.Component {
                 className=""
                 >
                     <div 
+                    onClick={this.props.toggleSearchSettings}
                     className="
                     bg-coolGray-800 bg-opacity-80 h-full w-full fixed 
                     z-30">                        
@@ -61,7 +62,7 @@ export class PopUpSearchSettings extends React.Component {
                         >
                             <input 
                             type="text"
-                            placeholder="placeholder placeholder placeholder "
+                            placeholder={this.props.searchTerm}
                             className="
                             text-center text-sm
                             overflow-hidden
@@ -117,7 +118,7 @@ export class PopUpSearchSettings extends React.Component {
                             <div className="w-full m-4 p-1">
 
                             <InputRange
-                                    maxValue={1000}
+                                    maxValue={this.props.filters.maxResultPrice}
                                     minValue={0}
                                     value={this.state.value}
                                     onChange={value => this.setState({ value })} />

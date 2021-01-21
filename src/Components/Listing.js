@@ -95,7 +95,7 @@ export class Listing extends React.Component {
                                 font-bold text-xs text-lime-600
                                 bg-lime-50 text-center
                                 flex-grow-0"
-                            >£{this.props.listing.price}</p>
+                            >{this.props.listing.price ? `£${this.props.listing.price}` : `FREE`}</p>
 
                             <div className="
                             bg-white rounded-sm shadow">
