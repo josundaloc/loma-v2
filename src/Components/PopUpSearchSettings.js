@@ -16,9 +16,10 @@ export class PopUpSearchSettings extends React.Component {
     constructor(props) {
         super(props);
         this.updateFilters = this.updateFilters.bind(this);
+        this.resetFilters = this.resetFilters.bind(this);
         this.state = {
             newSearchTerm: "",
-            value: { min: 0, max: Math.floor(this.props.maxResultPrice/1.5) },
+            value: { min: 0, max: 1000 },
             ebayValue: true,
             trashnothingValue: true,
             etsyValue: true,
@@ -32,7 +33,12 @@ export class PopUpSearchSettings extends React.Component {
 
     componentDidMount() {
         this.setState({
-            newSearchTerm: this.props.searchTerm
+            newSearchTerm: this.props.searchTerm,
+            value: {
+                min: 0,
+                max: this.props.maxResultPrice
+            },
+            sortOrder: this.props.display
         })
     }
 
@@ -62,6 +68,20 @@ export class PopUpSearchSettings extends React.Component {
             this.state.value.max,
             this.state.sortOrder)
 
+    }
+
+    resetFilters() {
+        this.props.setSiteFilters(
+            this.state.newSearchTerm, 
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            0,
+            100000000,
+            "⚡️ Trending ⚡️")
     }
 
     render() {
@@ -114,10 +134,9 @@ export class PopUpSearchSettings extends React.Component {
                                 await this.setState({
                                     newSearchTerm: searchTerm
                                 })
-                                console.log(this.state.newSearchTerm)
                             }}
                             className="
-                            text-center text-sm
+                            text-center text-sm text-gray-700
                             overflow-hidden
                             border my-1 rounded-md p-1
                             h-8 w-full"></input>
@@ -162,9 +181,9 @@ export class PopUpSearchSettings extends React.Component {
                             border rounded text-center w-32 text-gray-600
                             m-1 text-xs">
                                 {/* "⚡️ Trending ⚡️" "Highest price first ▲" "Lowest price first ▼" */}
-                                <option value="⚡️ Trending ⚡️">⚡️ Trending ⚡️</option>
-                                <option value="Highest price first ▲">Highest price first ▲</option>
-                                <option value="Lowest price first ▼">Lowest price first ▼</option>
+                                <option value="⚡️ Trending ⚡️" selected={this.state.sortOrder === "⚡️ Trending ⚡️" ? true : false}>⚡️ Trending ⚡️</option>
+                                <option value="Highest price first ▲" selected={this.state.sortOrder === "Highest price first ▲" ? true : false}>Highest price first ▲</option>
+                                <option value="Lowest price first ▼" selected={this.state.sortOrder === "Lowest price first ▼" ? true : false}>Lowest price first ▼</option>
                             </select>
 
                         </div>
@@ -172,14 +191,26 @@ export class PopUpSearchSettings extends React.Component {
                         <div
                         className="my-1.5
                         flex flex-row flex-wrap">
-                            <h3
-                            className="
-                            text-gray-600
-                            font-bold p-1">Price range:</h3>
+                            
 
+
+                            <div className="flex flex-row flex-wrap justify-between w-full">
+                                <h3
+                                className="
+                                text-gray-600
+                                font-bold p-1">Price range:</h3>
+                                <input id="minRange" type="number" placeholder={this.state.value.min} className="
+                                border rounded text-xxs w-14 h-5 my-auto text-left" 
+                                onChange={() => {this.setState(prevState => ({value: {min: document.getElementById("minRange").value, max: prevState.value.max}}))}}></input>
+                                <input id="maxRange"type="number" placeholder={this.state.value.max} className="
+                                border rounded text-xxs w-14 h-5 ml-2 my-auto text-left mr-1"
+                                onChange={() => {this.setState(prevState => ({value: {min: prevState.value.min, max: document.getElementById("maxRange").value}}))}}></input>
+                            </div>
+                            
+                            
                             <div className="w-full m-4 p-1">
 
-                            <InputRange
+                                <InputRange
                                     maxValue={this.props.maxResultPrice}
                                     minValue={0}
                                     value={this.state.value}
@@ -282,6 +313,13 @@ export class PopUpSearchSettings extends React.Component {
 
                         <div
                         className="flex flex-row justify-center">
+                            <button
+                            onClick={this.updateFilters}
+                            className="
+                            bg-gray-100 rounded py-1.5 px-3 mr-2">
+                                <p className="
+                                font-bold text-gray-700">Reset</p>
+                            </button>
                             <button
                             onClick={this.updateFilters}
                             className="

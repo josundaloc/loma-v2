@@ -277,6 +277,7 @@ class App extends React.Component {
     maxRange,
     sortOrder) {
     await this.setState(prevState => ({
+      resultsDisplay: sortOrder,
       filters: {
         sites: {
           ebay: eBayFilter,
@@ -299,7 +300,7 @@ class App extends React.Component {
     })
   )
     console.log(this.state.filters)
-    await this.setData(newSearchTerm)
+    this.setData(newSearchTerm)
   }
 
   async toggleSearchSettings() {
@@ -578,7 +579,8 @@ const setEbayData = async () => {
     }
   }
 
-  this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...ebayDataParsed()])}));
+  this.setState(prevState => ({loading: false, Data: [...prevState.Data,...ebayDataParsed()]}));
+  this.reOrderDisplay(this.state.resultsDisplay)
 }
 
 const setDepopData = async () => {
@@ -621,6 +623,7 @@ const setDepopData = async () => {
     });
 
     this.setState(prevState => ({loading: false, Data: [...prevState.Data,...depopDataParsed]}));
+    this.reOrderDisplay(this.state.resultsDisplay)
 
   } else if (this.state.depopData.status === "resolved") {
     const depopDataFiltered = this.state.depopData.data.filter((listing) => {
@@ -636,7 +639,8 @@ const setDepopData = async () => {
         return false;
       }
     });
-    this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...depopDataFiltered])}));
+    this.setState(prevState => ({Data: [...prevState.Data,...depopDataFiltered]}));
+    this.reOrderDisplay(this.state.resultsDisplay)
   }
 } 
 
@@ -681,7 +685,8 @@ const setGumtreeData = async () => {
       }
     });
 
-    this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...gumtreeDataFiltered])}));
+    this.setState(prevState => ({loading: false, Data: [...prevState.Data,...gumtreeDataFiltered]}));
+    this.reOrderDisplay(this.state.resultsDisplay)
 
   } else {
     const gumtreeDataFiltered = this.state.gumtreeData.data.filter( (listing) => {
@@ -697,7 +702,8 @@ const setGumtreeData = async () => {
         return false;
       }
     })
-    this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...gumtreeDataFiltered])}));
+    this.setState(prevState => ({Data: [...prevState.Data,...gumtreeDataFiltered]}));
+    this.reOrderDisplay(this.state.resultsDisplay)
     
   }
 }
@@ -743,7 +749,8 @@ const setFacebookData = async () => {
       }
     });
     
-    this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...facebookDataFiltered])}));
+    this.setState(prevState => ({loading: false, Data: [...prevState.Data,...facebookDataFiltered]}));
+    this.reOrderDisplay(this.state.resultsDisplay)
   } else {
     const facebookDataFiltered = this.state.facebookData.data.filter( (listing) => {
       if (isNull(listing.title).toLowerCase().includes(this.state.searchTerm) && 
@@ -758,7 +765,8 @@ const setFacebookData = async () => {
         return false;
       }
     })
-    this.setState(prevState => ({Data: shuffleArray([...prevState.Data,...facebookDataFiltered])}));
+    this.setState(prevState => ({Data: [...prevState.Data,...facebookDataFiltered]}));
+    this.reOrderDisplay(this.state.resultsDisplay)
   }
 }
 
@@ -768,17 +776,20 @@ const setEtsyData = async () => {
   const etsyJson = await etsyRaw.json();
   const etsyDataResults = etsyJson.results;
   const etsyData = etsyDataResults.map( listing => {
+
+    let etsyFirstImage = listing.Images ? missingImagesFiltered(listing.Images[0].url_570xN) : imagePlaceholder
     return {
       title: listing.title,
       price: listing.price,
       description: listing.description,
-      image: missingImagesFiltered(listing.Images[0].url_570xN),
+      image: etsyFirstImage,
       url: listing.url,
       site: "etsy"
     }
   });
 
-  this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...etsyData])}));
+  this.setState(prevState => ({loading: false, Data: [...prevState.Data,...etsyData]}));
+  this.reOrderDisplay(this.state.resultsDisplay)
 }
 
 const setTrashNothingData = async () => {
@@ -797,7 +808,8 @@ const setTrashNothingData = async () => {
     }
   });
 
-  this.setState(prevState => ({loading: false, Data: shuffleArray([...prevState.Data,...trashNothingData])}));
+  this.setState(prevState => ({loading: false, Data: [...prevState.Data,...trashNothingData]}));
+  this.reOrderDisplay(this.state.resultsDisplay)
 }
 
 ///>Data calls
@@ -859,7 +871,7 @@ const setTrashNothingData = async () => {
               setSiteFilters={this.setSiteFilters}
               /> : null}
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
-          <SearchBar onChange={this.handleChange}/>
+          <SearchBar onChange={this.handleChange} searchTerm={this.state.searchTerm}/>
           
 
           {this.state.landing ? <Landing /> : null } 
