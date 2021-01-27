@@ -15,10 +15,55 @@ import trashnothing from '../assets/Freecycle.png';
 export class PopUpSearchSettings extends React.Component {
     constructor(props) {
         super(props);
+        this.updateFilters = this.updateFilters.bind(this);
         this.state = {
-            value: { min: this.props.filters.maxResultPrice/6, max: this.props.filters.maxResultPrice/1.5 },
+            newSearchTerm: "",
+            value: { min: 0, max: Math.floor(this.props.maxResultPrice/1.5) },
+            ebayValue: true,
+            trashnothingValue: true,
+            etsyValue: true,
+            facebookValue: true,
+            gumtreeValue: true,
+            depopValue: true,
+            sortOrder: "⚡️ Trending ⚡️",
+            gridView: "Images only" //"Highest price first ▲" "Lowest price first ▼"
         };
     }
+
+    componentDidMount() {
+        this.setState({
+            newSearchTerm: this.props.searchTerm
+        })
+    }
+
+    updateFilters() {
+
+        // console.log(
+        //     "new searchterm :" + this.state.newSearchTerm,
+        //     "ebay: " + this.state.ebayValue, 
+        //     "gumtree: " + this.state.gumtreeValue, 
+        //     "trashnothing: " + this.state.trashnothingValue, 
+        //     "etsy: " + this.state.etsyValue, 
+        //     "facebook: " + this.state.facebookValue,
+        //     "depop: " + this.state.depopValue,
+        //     "minrange: " + this.state.value.min,
+        //     "maxrange: " + this.state.value.max,
+        //     "sortorder: " + this.state.sortOrder,
+        //     "gridview: " + this.state.gridView)
+        this.props.setSiteFilters(
+            this.state.newSearchTerm, 
+            this.state.ebayValue,
+            this.state.trashnothingValue,
+            this.state.etsyValue,
+            this.state.facebookValue,
+            this.state.gumtreeValue,
+            this.state.depopValue,
+            this.state.value.min,
+            this.state.value.max,
+            this.state.sortOrder)
+
+    }
+
     render() {
             return (
                 <div 
@@ -33,7 +78,7 @@ export class PopUpSearchSettings extends React.Component {
 
                     <div
                     className="
-                    fixed z-40 rounded-l-lg right-0 p-1.5 px-2
+                    fixed z-40 rounded-l-lg right-0 p-1.5 px-2 shadow-lg
                     bg-white w-64 h-full"
                     >
 
@@ -62,7 +107,15 @@ export class PopUpSearchSettings extends React.Component {
                         >
                             <input 
                             type="text"
+                            id="searchQuery"
                             placeholder={this.props.searchTerm}
+                            onChange={async () => {
+                                let searchTerm = document.getElementById("searchQuery").value;
+                                await this.setState({
+                                    newSearchTerm: searchTerm
+                                })
+                                console.log(this.state.newSearchTerm)
+                            }}
                             className="
                             text-center text-sm
                             overflow-hidden
@@ -82,6 +135,7 @@ export class PopUpSearchSettings extends React.Component {
                             border rounded text-center
                             w-32 text-gray-600
                             m-1 text-xs">
+                                
                                 <option>Images only</option>
                                 <option>Images + Description</option>
                                 <option>Detailed</option>
@@ -97,12 +151,20 @@ export class PopUpSearchSettings extends React.Component {
                             text-gray-600
                             font-bold p-1">Sort:</h3>
 
-                            <select className="
+                            <select 
+                            onChange={
+                                () => {
+                                    let sortOrderValue = document.getElementById("sortOrder").value
+                                    this.setState({sortOrder: sortOrderValue})}
+                            }
+                            id="sortOrder"
+                            className="
                             border rounded text-center w-32 text-gray-600
                             m-1 text-xs">
-                                <option>Trending</option>
-                                <option>Lowest first</option>
-                                <option>Highest first</option>
+                                {/* "⚡️ Trending ⚡️" "Highest price first ▲" "Lowest price first ▼" */}
+                                <option value="⚡️ Trending ⚡️">⚡️ Trending ⚡️</option>
+                                <option value="Highest price first ▲">Highest price first ▲</option>
+                                <option value="Lowest price first ▼">Lowest price first ▼</option>
                             </select>
 
                         </div>
@@ -118,10 +180,10 @@ export class PopUpSearchSettings extends React.Component {
                             <div className="w-full m-4 p-1">
 
                             <InputRange
-                                    maxValue={this.props.filters.maxResultPrice}
+                                    maxValue={this.props.maxResultPrice}
                                     minValue={0}
                                     value={this.state.value}
-                                    onChange={value => this.setState({ value })} />
+                                    onChange={value => this.setState({ value })}/>
 
                             </div>
                             
@@ -137,7 +199,9 @@ export class PopUpSearchSettings extends React.Component {
                                     <div 
                                     className="
                                     w-1/2 h-9 flex flex-row">
-                                        <input
+                                        <input checked={this.state.ebayValue}
+                                        onChange={() => {this.setState(prevState => ({ebayValue: !prevState.ebayValue}))}}
+                                        id="ebayValue"
                                         className="my-auto"
                                         type="checkbox"></input>
                                         <img 
@@ -147,7 +211,9 @@ export class PopUpSearchSettings extends React.Component {
                                     <div 
                                     className="
                                     w-1/2 h-9 flex flex-row">
-                                        <input
+                                        <input checked={this.state.depopValue}
+                                        onChange={() => {this.setState(prevState => ({depopValue: !prevState.depopValue}))}}
+                                        id="depopValue"
                                         className="my-auto"
                                         type="checkbox"></input>
                                         <img 
@@ -159,7 +225,9 @@ export class PopUpSearchSettings extends React.Component {
                                     <div 
                                     className="
                                     w-1/2 h-9 flex flex-row">
-                                        <input
+                                        <input checked={this.state.gumtreeValue}
+                                        onChange={() => {this.setState(prevState => ({gumtreeValue: !prevState.gumtreeValue}))}}
+                                        id="gumtreeValue"
                                         className="my-auto"
                                         type="checkbox"></input>
                                         <img 
@@ -169,7 +237,9 @@ export class PopUpSearchSettings extends React.Component {
                                     <div 
                                     className="
                                     w-1/2 h-9 flex flex-row">
-                                        <input
+                                        <input checked={this.state.facebookValue}
+                                        onChange={() => {this.setState(prevState => ({facebookValue: !prevState.facebookValue}))}}
+                                        id="facebookValue"
                                         className="my-auto"
                                         type="checkbox"></input>
                                         <img 
@@ -181,7 +251,9 @@ export class PopUpSearchSettings extends React.Component {
                                     <div 
                                     className="
                                     w-1/2 h-9 flex flex-row">
-                                        <input
+                                        <input checked={this.state.etsyValue}
+                                        onChange={() => {this.setState(prevState => ({etsyValue: !prevState.etsyValue}))}}
+                                        id="etsyValue"
                                         className="my-auto"
                                         type="checkbox"></input>
                                         <img 
@@ -192,7 +264,9 @@ export class PopUpSearchSettings extends React.Component {
                                     <div 
                                     className="
                                     w-1/2 h-9 flex flex-row">
-                                        <input
+                                        <input checked={this.state.trashnothingValue}
+                                        onChange={() => {this.setState(prevState => ({trashnothingValue: !prevState.trashnothingValue}))}}
+                                        id="trashnothingValue"
                                         className="my-auto"
                                         type="checkbox"></input>
                                         <img 
@@ -209,6 +283,7 @@ export class PopUpSearchSettings extends React.Component {
                         <div
                         className="flex flex-row justify-center">
                             <button
+                            onClick={this.updateFilters}
                             className="
                             bg-blue-100 rounded py-1.5 px-3">
                                 <p className="

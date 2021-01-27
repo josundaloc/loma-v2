@@ -7,11 +7,13 @@ import { Landing } from './Components/Landing';
 import { LoadingPop } from './Components/LoadingPop';
 import { PopUpListing } from './Components/PopUpListing';
 import { PopUpSearchSettings } from './Components/PopUpSearchSettings';
+import { PopUpLogSign } from './Components/PopUpLogSign';
 
 
 import imagePlaceholder from './assets/gallery.png';
 
 import { hotjar } from 'react-hotjar';
+
 
 class App extends React.Component {
   constructor(props) {
@@ -33,8 +35,7 @@ class App extends React.Component {
         range: {
           min: 0,
           max: 100000000,
-        },
-        maxResultPrice: 1000
+        }
       },
       searchTerm: "",
       loading: false,
@@ -43,8 +44,10 @@ class App extends React.Component {
         display: false,
         listing: {}
       },
+      popUpGeneral: "PopUpLogSign",
       popUpSearchSettings: {
         display: false,
+        maxResultPrice: 1000
       },
       depopData: {
         data: [{nothing : "none"}],
@@ -66,7 +69,7 @@ class App extends React.Component {
     this.toggleLanding = this.toggleLanding.bind(this);
     this.changeActiveListing = this.changeActiveListing.bind(this);
     this.toggleSearchSettings = this.toggleSearchSettings.bind(this);
-    this.setFilter = this.setFilter.bind(this);
+    this.setSiteFilters = this.setSiteFilters.bind(this);
   }
 
   componentDidMount() {
@@ -262,14 +265,120 @@ class App extends React.Component {
     
   } //COMPONENT MOUNT ENDS
 
-  async setFilter(newFilter, newDisplay, newSearch) {
-    await this.setState({
-      resultsDisplay: newDisplay,
-      filters: newFilter, 
-      searchTerm: newSearch,
-    });
+  async setSiteFilters(
+    newSearchTerm, 
+    eBayFilter, 
+    trashNothingFilter, 
+    etsyFilter, 
+    facebookFilter, 
+    gumtreeFilter, 
+    depopFilter, 
+    minRange, 
+    maxRange,
+    sortOrder) {
+    await this.setState(prevState => ({
+      filters: {
+        sites: {
+          ebay: eBayFilter,
+          trashnothing: trashNothingFilter,
+          etsy: etsyFilter,
+          facebook: facebookFilter,
+          gumtree: gumtreeFilter,
+          depop: depopFilter,
+        },
+        range: {
+          min: minRange,
+          max: maxRange,
+        }
+      },
+      searchTerm: newSearchTerm,
+      popUpSearchSettings: {
+        display: !prevState.popUpSearchSettings.display,
+        maxResultPrice: prevState.popUpSearchSettings.maxResultPrice
+      }
+    })
+  )
+    console.log(this.state.filters)
+    await this.setData(newSearchTerm)
+  }
 
-      this.setData();
+  async toggleSearchSettings() {
+    console.log("search settings toggled")
+    if (this.state.popUpSearchSettings.display === true) {
+      await this.setState({
+        popUpSearchSettings: {
+          display: false
+        }
+      })
+    } else if (this.state.popUpSearchSettings.display === false) {
+
+      let highestPrice = await this.state.Data.reduce(function(current, item) {
+        if (item.price !== "~") {
+          return (current > Number(item.price) ? current : Number(item.price))
+        } else {
+          return item.price
+        }
+      }, 0)
+
+      console.log(highestPrice);
+      
+      this.setState({
+        popUpSearchSettings: {
+          display: true,
+          maxResultPrice: highestPrice
+        }
+      })
+
+    }
+  }
+
+
+  handleChange(searchQuery) {
+    this.setState({ searchTerm: searchQuery });
+    this.setData(searchQuery);
+
+  }
+
+  togglePopUp(listing) {
+    if (this.state.popUpListing.display === true ) {
+      this.setState({
+        popUpListing: {
+          display: false,
+          listing: {}
+        }
+      })
+    } else {
+      this.setState({
+        popUpListing: {
+          display: true,
+          listing: listing
+        }
+      })
+  }
+}  
+
+changeActiveListing(listing, direction) {
+    let currentActiveListingIndex = this.state.Data.indexOf(listing);
+
+    if (direction === "next") {
+      this.setState((prevState) => ({
+        popUpListing: {
+          display: true,
+          listing: prevState.Data[currentActiveListingIndex + 1]
+        }
+      }))
+    } else if (direction === "previous" && currentActiveListingIndex > 0) {
+      this.setState((prevState) => ({
+        popUpListing: {
+          display: true,
+          listing: prevState.Data[currentActiveListingIndex - 1]
+        }
+      }))
+    } else {
+      return;
+    }
+    
+
   }
 
   toggleLanding() {
@@ -319,9 +428,9 @@ class App extends React.Component {
   if (this.state.Data) {
       if (this.state.resultsDisplay === "⚡️ Trending ⚡️") {
         this.setState({Data: shuffleArray(this.state.Data)})
-      } else if (this.state.resultsDisplay === "Highest price first ▼") {
+      } else if (this.state.resultsDisplay === "Highest price first ▲") {
         this.setState({Data: this.state.Data.sort(highest)})
-      } else if (this.state.resultsDisplay === "Lowest price first ▲") {
+      } else if (this.state.resultsDisplay === "Lowest price first ▼") {
         this.setState({Data: this.state.Data.sort(lowest)}) }
         }
   
@@ -736,100 +845,18 @@ const setTrashNothingData = async () => {
   }
   }
 
-  handleChange(searchQuery) {
-    this.setState({ searchTerm: searchQuery });
-    this.setData(searchQuery);
-
-  }
-
-  togglePopUp(listing) {
-    if (this.state.popUpListing.display === true ) {
-      this.setState({
-        popUpListing: {
-          display: false,
-          listing: {}
-        }
-      })
-    } else {
-      this.setState({
-        popUpListing: {
-          display: true,
-          listing: listing
-        }
-      })
-  }
-} 
-
-async toggleSearchSettings() {
-  await this.setState((prevState) => ({
-    popUpSearchSettings: {
-      display: !prevState.popUpSearchSettings.display
-    }
-  }))
-
-
-  const setMaxResultPrice = async () => {
-    function highest( a, b ) {
-      if ( Number(a.price) < Number(b.price) ){
-        return 1;
-      }
-      if ( Number(a.price) > Number(b.price) ){
-        return -1;
-      }
-      return 0;
-    }
-    let array = this.state.Data.sort(highest);
-    let highestPrice = array[0].price
-
-    await this.setState({
-      filters: {
-        maxResultPrice: highestPrice
-      }
-    })
-
-    console.log(this.state.filters.maxResultPrice);
-  }
-
-  if (this.state.popUpSearchSettings.display === true) {
-    setMaxResultPrice();
-  }
-  
-} 
-
-changeActiveListing(listing, direction) {
-    let currentActiveListingIndex = this.state.Data.indexOf(listing);
-
-    if (direction === "next") {
-      this.setState((prevState) => ({
-        popUpListing: {
-          display: true,
-          listing: prevState.Data[currentActiveListingIndex + 1]
-        }
-      }))
-    } else if (direction === "previous" && currentActiveListingIndex > 0) {
-      this.setState((prevState) => ({
-        popUpListing: {
-          display: true,
-          listing: prevState.Data[currentActiveListingIndex - 1]
-        }
-      }))
-    } else {
-      return;
-    }
-    
-
-  }
-  
   render() {
     return (
       <div className="App w-100 h-full bg-white overflow-x-hidden z-0">
+          {this.state.popUpGeneral === "PopUpLogSign" ? <PopUpLogSign/>: null}
           {this.state.popUpSearchSettings.display ? 
             <PopUpSearchSettings 
               toggleSearchSettings={this.toggleSearchSettings} 
               filters={this.state.filters}
+              maxResultPrice={this.state.popUpSearchSettings.maxResultPrice}
               searchTerm={this.state.searchTerm}
-              setFilter={this.setFilter}
               display={this.state.resultsDisplay}
+              setSiteFilters={this.setSiteFilters}
               /> : null}
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
           <SearchBar onChange={this.handleChange}/>

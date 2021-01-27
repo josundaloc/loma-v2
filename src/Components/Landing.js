@@ -25,7 +25,7 @@ export class Landing extends React.Component {
                 flex items-center flex-col
             ">
             <h2 className="
-            font-black text-xl sm:text-2xl lg:text-3xl xl:text-4xl
+            font-black text-xl sm:text-2xl lg:text-3xl xl:text-4xl tracking-tight
             pt-4
             ">
             Ask Loma first.

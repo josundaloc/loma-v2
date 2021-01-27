@@ -84,7 +84,7 @@ export class PopUpListing extends React.Component {
                     <div 
                     onClick={this.togglePopUp}
                     className="
-                     bg-coolGray-800 bg-opacity-80 h-full w-full fixed 
+                     bg-coolGray-700 bg-opacity-90 h-full w-full fixed 
                      z-30">
                          
                         <button
@@ -121,22 +121,21 @@ export class PopUpListing extends React.Component {
                     </div>
 
                     <div className="
-                    fixed z-40
-                    bg-white rounded
+                    fixed z-40 shadow-2xl
+                    bg-white rounded-lg
                     top-1/6 left-1/24 
                     sm:left-1/8 lg:left-1/6
                     h-2/3
                     se:w-11/12 sm:w-3/4 lg:w-2/3 
                     overflow-hidden
                     flex flex-col sm:flex-row
-                    shadow-md
                     "
                     >
 
                         <div className="
                         w-full sm:w-2/3 
                         h-3/5 psm:h-2/3 sm:h-full 
-                        sm:inline-block bg-coolGray-700
+                        bg-coolGray-700 flex flex-row justify-center
                         ">
 
                             <img 
@@ -144,7 +143,6 @@ export class PopUpListing extends React.Component {
                             className="
                             cursor-pointer
                             h-full object-contain
-                            mx-auto
                             sm:inline-block sm:justify-center
                             "
                             alt={this.props.description}
