@@ -35,7 +35,7 @@ export class Results extends React.Component {
                 <div
                 className=" flex flex-row
                 bg-gray-50 text-gray-500 rounded-md p-2 mx-1.5 leading-none align-middle py-auto
-                text-xs"><img className="h-3 mr-1 my-auto" src={sort}></img>Sort by ▼
+                text-xs"><img className="h-3 mr-1 my-auto" src={sort}></img>{this.props.resultsDisplay}
                 </div>
 
                 <div

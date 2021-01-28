@@ -871,7 +871,7 @@ const setTrashNothingData = async () => {
               setSiteFilters={this.setSiteFilters}
               /> : null}
           {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
-          <SearchBar onChange={this.handleChange} searchTerm={this.state.searchTerm}/>
+          <SearchBar onChange={this.handleChange} resultsDisplay={this.state.resultsDisplay} searchTerm={this.state.searchTerm}/>
           
 
           {this.state.landing ? <Landing /> : null } 

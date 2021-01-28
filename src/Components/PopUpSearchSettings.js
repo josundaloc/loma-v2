@@ -142,7 +142,7 @@ export class PopUpSearchSettings extends React.Component {
                             h-8 w-full"></input>
                         </div>
                         
-                        <div
+                        {/* <div
                         className="my-1.5
                         flex flex-row justify-between">
                             <h3
@@ -160,7 +160,7 @@ export class PopUpSearchSettings extends React.Component {
                                 <option>Detailed</option>
                             </select>
 
-                        </div>
+                        </div> */}
 
                         <div
                         className="
