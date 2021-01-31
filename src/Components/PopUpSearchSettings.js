@@ -26,8 +26,8 @@ export class PopUpSearchSettings extends React.Component {
             facebookValue: true,
             gumtreeValue: true,
             depopValue: true,
-            sortOrder: "⚡️ Trending ⚡️",
-            gridView: "Images only" //"Highest price first ▲" "Lowest price first ▼"
+            sortOrder: "⚡️ Trending ⚡️",//"Highest price first ▲" "Lowest price first ▼"
+            gridView: "Images Only" //"Images Only", // "Image + Description"
         };
     }
 
@@ -38,7 +38,8 @@ export class PopUpSearchSettings extends React.Component {
                 min: 0,
                 max: this.props.maxResultPrice
             },
-            sortOrder: this.props.display
+            sortOrder: this.props.display,
+            gridView: this.props.gridView
         })
     }
 
@@ -66,7 +67,8 @@ export class PopUpSearchSettings extends React.Component {
             this.state.depopValue,
             this.state.value.min,
             this.state.value.max,
-            this.state.sortOrder)
+            this.state.sortOrder,
+            this.state.gridView)
 
     }
 
@@ -142,25 +144,30 @@ export class PopUpSearchSettings extends React.Component {
                             h-8 w-full"></input>
                         </div>
                         
-                        {/* <div
-                        className="my-1.5
-                        flex flex-row justify-between">
+                        <div
+                        className="
+                        flex flex-row justify-between my-1.5">
                             <h3
                             className="
                             text-gray-600
-                            font-bold p-1">Grid view:</h3>
+                            font-bold p-1">Sort:</h3>
 
-                            <select className="
-                            border rounded text-center
-                            w-32 text-gray-600
+                            <select 
+                            onChange={
+                                () => {
+                                    let gridViewValue = document.getElementById("gridView").value
+                                    this.setState({gridView: gridViewValue})}
+                            }
+                            id="gridView"
+                            className="
+                            border rounded text-center w-32 text-gray-600
                             m-1 text-xs">
-                                
-                                <option>Images only</option>
-                                <option>Images + Description</option>
-                                <option>Detailed</option>
+                                {/* "⚡️ Trending ⚡️" "Highest price first ▲" "Lowest price first ▼" */}
+                                <option value="Images Only" selected={this.state.gridView === "Images Only" ? true : false}>Images Only</option>
+                                <option value="Image + Description" selected={this.state.gridView === "Image + Description" ? true : false}>Image + Description</option>
                             </select>
 
-                        </div> */}
+                        </div>
 
                         <div
                         className="

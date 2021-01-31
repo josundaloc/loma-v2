@@ -1,5 +1,8 @@
 import React from 'react';
 import logo180 from '../assets/logo180.png';
+import user from '../assets/user.svg';
+import menu from '../assets/menu.svg';
+import search from '../assets/white-search.svg';
 //import './SearchBar.css';
 
 export class SearchBar extends React.Component {
@@ -63,50 +66,42 @@ export class SearchBar extends React.Component {
 
     render() {
         return (
-            <div className="SearchBar">
-                    <a href="/">
+            <div className="max-w-screen-md mx-auto px-3 flex flex-col justify-center">
+                    <div className ="sm:hidden
+                    w-full flex flex-row flex-wrap justify-between items-center
+                    ">
+                        <img 
+                        className="h-7"    
+                        src={menu}/>
+                        <a href="/">
                         <img src={logo180} alt="logo" 
                             className="
-                                w-20 sm:w-28 md:w-32 lg:w-36 py-3
+                                h-12 py-3
                                 block
-                                mx-auto
                             "
-                    //onClick={window.location.reload()}
-                    />
-                    </a>
+                        />
+                        </a>
+                        <img
+                        className="h-7"    
+                        src={user}/>
 
-
-                    <div className="flex flex-wrap justify-center">
-                    <input
-                        id="searchQuery"
-                        //onChange={this.handleTyping}
-                        placeholder="Find anything secondhand."
-                        className="
-                            border border-gray-200 
-                            h-8 w-9/12 lg:w-7/12
-                            rounded  
-                            pl-5 pr-3
-                            align-center
-                            text-sm text-center italic
-                            "
-                        //onChange={this.handleChange}
-                        >
-                    </input>
-
-                    <button 
-                        className="SearchButton
-                            bg-red-500 w-9
-                            h-8
-                            ml-2
-                            rounded
-                            text-gray-100
-                            text-sm"
-                        onClick={this.handleChange}>🔍
-                    </button>
-
-
-                    
                     </div>
+
+                    <div className="
+                    w-full h-8 flex flex-row no-wrap sm:mt-4 lg:mt-7">
+                        <input
+                        type="text" placeholder="Find anything secondhand" id="searchQuery"
+                        className="w-full text-center text-sm italic pt-0.5 border border-r-0 rounded-tl-lg rounded-bl-lg"></input>
+                        <button
+                        onClick={this.handleChange}
+                        className="
+                        bg-red-500 w-8 rounded-tr-lg rounded-br-lg
+                        p-2"><img classname=""src={search}/></button>
+
+                    </div>
+
+
+
                         <p
                         className="
                         m-1 pt-0

@@ -1,5 +1,6 @@
 import React from 'react';
-import loading from '../assets/loading.gif';
+import loading from '../assets/loading.gif'
+import { SkeletonListing } from './SkeletonListing'
 
 // const texts = ["websites", "illustrations", "pancakes"];
 // let count = 0;
@@ -31,10 +32,17 @@ import loading from '../assets/loading.gif';
 export class LoadingPop extends React.Component {
     render() {
         return (
-            <div className="flex flex-col justify-center">
-                <img className="mx-auto mt-20" src={loading} alt="loading"/>
-                <p className="text-sm mx-auto">This'll only take a few seconds...</p>
-
+            <div className="w-full flex flex-wrap justify-center p-1">
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                <SkeletonListing />
+                
             </div>
             
             

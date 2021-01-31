@@ -12,7 +12,9 @@ import heart from '../assets/heart.svg';
 //import './Listing.css';
 
 const truncate100 = (input) => input.length > 100 ? `${input.substring(0, 100)}...` : input;
-const truncate50 = (input) => input.length > 35 ? `${input.substring(0, 35)}...` : input;
+const truncate55 = (input) => input.length > 55 ? `${input.substring(0, 55)}...` : input;
+
+
 
 export class Listing extends React.Component {
     constructor(props) {
@@ -46,71 +48,72 @@ export class Listing extends React.Component {
         return (
 
             // LISTING ITSELF
-            <div className="
-            
-            bg-white
-            se:h-40 se:w-40 ipx:h-44 ipx:w-44 sm:h-52 sm:w-52
-            ipx:mr-1 ipx:mb-1 se:rounded shadow-md
-            flex flex-wrap flex-col justify-center
+            <div 
+            onClick={this.togglePopUp}
+            className="
             cursor-pointer
-            relative
+            w-1/2 sm:w-1/3
             "
-            listing={this.props.listing} 
             >
+                <div className="
+                py-0.5 px-0.5 ipx:py-1 ipx:px-1
+                w-full h-full rounded-lg
+                "
+                >   
+                    <img
+                    src={heart}
+                    className="
+                    -mb-6 mr-1 pt-1
+                    float-right h-6"
+                    style={{filter: "drop-shadow(1px 1px 1px #8E8E91)", webkitFilter: "drop-shadow(1px 1px 1px #8E8E91)"}} />
 
-                    {/* IMAGE THUMBNAIL */}
-                    <img className="
-                        
-                        se:h-40 se:w-40 ipx:h-44 ipx:w-44 sm:h-52 sm:w-52
-                        absolute
-                        z-10
-                        se:rounded
-                        object-cover"
-                    src={this.props.listing.image ? this.props.listing.image : imagePlaceholder} alt="Thumbnail" />
+                    <img src={this.props.listing.image ? this.props.listing.image : imagePlaceholder}
+                    className="
+                    bg-gray-50
+                    h-40 psm:h-60 w-full object-cover shadow mb-2.5
+                    rounded-lg"
+                    />
 
-                    {/* OVERLAY */}
-                    <div className="
-                    se:h-40 se:w-40 ipx:h-44 ipx:w-44 sm:h-52 sm:w-52 
-                    flex flex-col justify-between absolute z-20"
-                    onClick={this.togglePopUp}>
-                        {/* HEART */}
-                        <div className="
-                        
-                        flex flex-row-reverse">
-                            <img className="
-                                h-4 flex-none
-                                m-2
-                                "src={heart}  alt={this.props.listing.site}/>
-                        </div>
-                        
-                        {/* INFO DIV */}
-                        <div className="
-                            
-                            flex flex-row justify-start items-center
-                            h-7
+                    <div
+                    className="w-full rounded
+                    "
+                    >
+                           {this.props.gridView === "Image + Description" ? 
+                           <p className=" overflow-ellipsis leading-tight
+                           text-sm font-bold text-gray-600 mb-2
+                           p-0 m-0 break-words
+                           ">{truncate55(this.props.listing.title)}</p>
+                             : null}
+
+                            <div className="
+                            flex flex-row justify-start items-center mb-1
                             ">
                             <p className="
-                                
-                                px-1 m-1 rounded-sm shadow
+                                h-4
+                                px-1 mr-1.5 rounded-sm shadow
                                 font-bold text-xs text-lime-600
                                 bg-lime-50 text-center
                                 flex-grow-0"
                             >{this.props.listing.price ? `£${this.props.listing.price}` : `FREE`}</p>
 
-                            <div className="
+                            <div className="h-4 flex flex-col justify-center px-1.5 py-0.5
                             bg-white rounded-sm shadow">
                             <img className="
-                            h-3 m-0.5
+                            h-full
                             flex-none 
                             "src={this.logo()}  alt={this.props.listing.site}/> 
 
                             </div >
                            
                             </div>
+
                     </div>
+
                     
 
-           </div>
+                </div>
+              
+            </div>
 
         )
     }

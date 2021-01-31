@@ -17,7 +17,7 @@ export class PopUpLogSign extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mode: null //Sign Up / Log In/ My Account / null
+            mode: "Sign Up" //"Sign Up" / "Log In"/ "My Account" / null
         }
     }
     render() {

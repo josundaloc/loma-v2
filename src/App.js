@@ -8,6 +8,8 @@ import { LoadingPop } from './Components/LoadingPop';
 import { PopUpListing } from './Components/PopUpListing';
 import { PopUpSearchSettings } from './Components/PopUpSearchSettings';
 import { PopUpLogSign } from './Components/PopUpLogSign';
+import { Sidebar } from './Components/Sidebar';
+import { UserLikes } from './Components/UserLikes';
 
 
 import imagePlaceholder from './assets/gallery.png';
@@ -23,6 +25,8 @@ class App extends React.Component {
       AccessToken: "none",
       ExpiryDate: 0,
       resultsDisplay: "⚡️ Trending ⚡️",
+      mainDisplay: "Landing", // "Results"  //  "Loading" // "UserLikes"
+      gridView: "Images Only", // "Image + Description"
       filters: {
         sites: {
           ebay: true,
@@ -38,13 +42,12 @@ class App extends React.Component {
         }
       },
       searchTerm: "",
-      loading: false,
       landing: true,
       popUpListing: {
         display: false,
         listing: {}
       },
-      popUpGeneral: "PopUpLogSign",
+      popUpGeneral: null, //"PopUpLogSign",
       popUpSearchSettings: {
         display: false,
         maxResultPrice: 1000
@@ -256,12 +259,12 @@ class App extends React.Component {
 
 
     ///////
-    getEbayAccessToken();
-    getDepopData();
-    getGumtreeData();
-    getFacebookData();
-    hotjar.initialize(2123002,6);
-    console.log("access token" +  this.state.AccessToken);
+    // getEbayAccessToken();
+    // getDepopData();
+    // getGumtreeData();
+    // getFacebookData();
+    // hotjar.initialize(2123002,6);
+    // console.log("access token" +  this.state.AccessToken);
     
   } //COMPONENT MOUNT ENDS
 
@@ -275,9 +278,11 @@ class App extends React.Component {
     depopFilter, 
     minRange, 
     maxRange,
-    sortOrder) {
+    sortOrder,
+    gridView) {
     await this.setState(prevState => ({
       resultsDisplay: sortOrder,
+      gridView: gridView,
       filters: {
         sites: {
           ebay: eBayFilter,
@@ -390,10 +395,7 @@ changeActiveListing(listing, direction) {
 
   async reOrderDisplay(sortOrder) {
     /// functions
-    console.log("Current results state:" + this.state.resultsDisplay);
-    console.log("value to be passed" + sortOrder);
     await this.setState({resultsDisplay: sortOrder});
-    console.log("sort order updated:" + this.state.resultsDisplay)
 
     function shuffleArray(array) {
       for (var i = array.length - 1; i > 0; i--) {
@@ -451,34 +453,6 @@ setData(searchQuery) {
   }
   return array;
 }
-
- async function seteBayAccessToken() {
-  var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Basic Sm9zZXBoVW4tTG9tYS1QUkQtMTk5YWQwZDkwLWY0Y2QyYjg4OlBSRC05OWFkMGQ5MDRiYjEtZjYzMS00OGMyLTkwNTQtYTQ5Yg==");
-  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-  myHeaders.append("Cookie", "ebay=%5Esbf%3D%23%5E; dp1=bu1p/QEBfX0BAX19AQA**6379634c^");
-  
-  var urlencoded = new URLSearchParams();
-  urlencoded.append("grant_type", "client_credentials");
-  urlencoded.append("scope", "https://api.ebay.com/oauth/api_scope");
-  
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: urlencoded,
-    redirect: 'follow'
-  };
-  
-  fetch("https://loma-cors.herokuapp.com/https://api.ebay.com/identity/v1/oauth2/token", requestOptions)
-      .then(response => response.json())
-      .then(jsonresponse => {
-        this.setState({
-          AccessToken: jsonresponse.access_token,
-          ExpiryDate: new Date().getTime() + jsonresponse.expires_in * 1000
-        })
-      })
-      .catch(error => console.log('error', error));
- }
 
  const isNull = (property) => {
   if (property === null || property === undefined) {
@@ -545,6 +519,36 @@ const eBayMissingImagesFiltered = (listing) => {
 ///<Data calls
 
 const setEbayData = async () => {
+
+ if (this.state.AccessToken === "none") {
+   console.log("this does not have an access token")
+
+   var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Basic Sm9zZXBoVW4tTG9tYS1QUkQtMTk5YWQwZDkwLWY0Y2QyYjg4OlBSRC05OWFkMGQ5MDRiYjEtZjYzMS00OGMyLTkwNTQtYTQ5Yg==");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append("Cookie", "ebay=%5Esbf%3D%23%5E; dp1=bu1p/QEBfX0BAX19AQA**6379634c^");
+    
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("grant_type", "client_credentials");
+    urlencoded.append("scope", "https://api.ebay.com/oauth/api_scope");
+    
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: urlencoded,
+      redirect: 'follow'
+    };
+
+   const tokenResponse = await fetch("https://loma-cors.herokuapp.com/https://api.ebay.com/identity/v1/oauth2/token", requestOptions);
+   const jsonToken = await tokenResponse.json();
+   const accessToken = jsonToken.access_token;
+
+   await this.setState({
+    AccessToken: accessToken,
+    ExpiryDate: Date.now() + accessToken.expires_in * 1000
+   })
+ }
+  console.log("fetching ebay data")
   var ebayHeaders = new Headers();
   ebayHeaders.append("Authorization", `Bearer ${this.state.AccessToken}`);
   ebayHeaders.append("Content-Type", "application/json");
@@ -579,8 +583,9 @@ const setEbayData = async () => {
     }
   }
 
-  this.setState(prevState => ({loading: false, Data: [...prevState.Data,...ebayDataParsed()]}));
+  this.setState(prevState => ({mainDisplay: "Results", Data: [...prevState.Data,...ebayDataParsed()]}));
   this.reOrderDisplay(this.state.resultsDisplay)
+
 }
 
 const setDepopData = async () => {
@@ -685,7 +690,7 @@ const setGumtreeData = async () => {
       }
     });
 
-    this.setState(prevState => ({loading: false, Data: [...prevState.Data,...gumtreeDataFiltered]}));
+    this.setState(prevState => ({mainDisplay: "Results", Data: [...prevState.Data,...gumtreeDataFiltered]}));
     this.reOrderDisplay(this.state.resultsDisplay)
 
   } else {
@@ -749,7 +754,7 @@ const setFacebookData = async () => {
       }
     });
     
-    this.setState(prevState => ({loading: false, Data: [...prevState.Data,...facebookDataFiltered]}));
+    this.setState(prevState => ({mainDisplay: "Results", Data: [...prevState.Data,...facebookDataFiltered]}));
     this.reOrderDisplay(this.state.resultsDisplay)
   } else {
     const facebookDataFiltered = this.state.facebookData.data.filter( (listing) => {
@@ -788,7 +793,7 @@ const setEtsyData = async () => {
     }
   });
 
-  this.setState(prevState => ({loading: false, Data: [...prevState.Data,...etsyData]}));
+  this.setState(prevState => ({mainDisplay: "Results", Data: [...prevState.Data,...etsyData]}));
   this.reOrderDisplay(this.state.resultsDisplay)
 }
 
@@ -808,7 +813,7 @@ const setTrashNothingData = async () => {
     }
   });
 
-  this.setState(prevState => ({loading: false, Data: [...prevState.Data,...trashNothingData]}));
+  this.setState(prevState => ({mainDisplay: "Results", Data: [...prevState.Data,...trashNothingData]}));
   this.reOrderDisplay(this.state.resultsDisplay)
 }
 
@@ -822,18 +827,12 @@ const setTrashNothingData = async () => {
   }
 
   console.time("complete search")
-  this.setState({Data: [], searchTerm: searchQuery.toLowerCase(), loading: true, landing: false});
-  if (Date.now() > this.state.ExpiryDate) {
-    console.log("this app does not have an access token! Getting access token")
-    seteBayAccessToken()
-  } else {
-    console.log("this has an access token" + this.state.AccessToken.substring(10,25));
-  }
+  this.setState({Data: [], searchTerm: searchQuery.toLowerCase(), mainDisplay: "Loading"});
   ///>Preliminary checks
 
   ///<The Timeline
   if (this.state.filters.sites.ebay) {
-    setEbayData();
+    setEbayData(); 
   }
 
   if (this.state.filters.sites.depop) {
@@ -859,34 +858,40 @@ const setTrashNothingData = async () => {
 
   render() {
     return (
-      <div className="App w-100 h-full bg-white overflow-x-hidden z-0">
-          {this.state.popUpGeneral === "PopUpLogSign" ? <PopUpLogSign/>: null}
-          {this.state.popUpSearchSettings.display ? 
-            <PopUpSearchSettings 
-              toggleSearchSettings={this.toggleSearchSettings} 
-              filters={this.state.filters}
-              maxResultPrice={this.state.popUpSearchSettings.maxResultPrice}
-              searchTerm={this.state.searchTerm}
-              display={this.state.resultsDisplay}
-              setSiteFilters={this.setSiteFilters}
-              /> : null}
-          {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
-          <SearchBar onChange={this.handleChange} resultsDisplay={this.state.resultsDisplay} searchTerm={this.state.searchTerm}/>
-          
-
-          {this.state.landing ? <Landing /> : null } 
-          {this.state.loading ? null: <Results Data={this.state.Data}
-                  resultsDisplay={this.state.resultsDisplay}
-                  reOrderDisplay={this.reOrderDisplay} 
+      <div className="w-full flex flex-row mx-auto">
+        {/* Top layer for popups */}
+        {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
+        {this.state.popUpSearchSettings.display ? 
+                <PopUpSearchSettings 
+                  toggleSearchSettings={this.toggleSearchSettings} 
+                  filters={this.state.filters}
+                  maxResultPrice={this.state.popUpSearchSettings.maxResultPrice}
                   searchTerm={this.state.searchTerm}
-                  search={this.handleChange}
-                  togglePopUp={this.togglePopUp}
-                  toggleSearchSettings={this.toggleSearchSettings}
-                  />}
-         
-          {this.state.loading ? <LoadingPop /> : null}
-  
-      </div>
+                  display={this.state.resultsDisplay}
+                  gridView={this.state.gridView}
+                  setSiteFilters={this.setSiteFilters}
+                  /> : null}
+        {this.state.popUpGeneral === "PopUpLogSign" ? <PopUpLogSign/>: null}
+        {/* Top layer for popups ends */}
+        <div className="w-full flex flex-row">
+          <div className="se:hidden sm:block"><Sidebar /></div>
+          <div className="w-full h-full bg-white overflow-x-hidden z-0">
+              <SearchBar onChange={this.handleChange} resultsDisplay={this.state.resultsDisplay} searchTerm={this.state.searchTerm}/>
+
+              {this.state.mainDisplay === "Landing" ? <Landing /> : null}
+              {this.state.mainDisplay === "UserLikes" ? <UserLikes /> : null}
+              {this.state.mainDisplay === "Loading" ? <LoadingPop /> : null}
+              {this.state.mainDisplay === "Results" ? <Results Data={this.state.Data}
+                      resultsDisplay={this.state.resultsDisplay}
+                      reOrderDisplay={this.reOrderDisplay} 
+                      searchTerm={this.state.searchTerm}
+                      search={this.handleChange}
+                      togglePopUp={this.togglePopUp}
+                      toggleSearchSettings={this.toggleSearchSettings}
+                      gridView={this.state.gridView} /> : null}
+          </div>
+        </div>
+      </div> 
     );
   }
 }

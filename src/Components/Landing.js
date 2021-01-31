@@ -21,8 +21,8 @@ export class Landing extends React.Component {
     render() {
         return (
     <div>
-        <div className="
-                flex items-center flex-col
+        <div className=" w-full
+            flex items-center flex-col
             ">
             <h2 className="
             font-black text-xl sm:text-2xl lg:text-3xl xl:text-4xl tracking-tight
@@ -40,29 +40,29 @@ export class Landing extends React.Component {
 And now, you can check all of the top sites and compare them in one place. </p>
 
             <img src={sketch} alt="Sketch by Nicole Miles, depicting 6 types of Loma customers"
-            className="w-screen sm:w-10/12 lg:w-3/4
+            className="w-full sm:w-10/12 lg:w-3/4
             " />
         </div>
 
         <div className="
                     bg-gray-50
                     flex flex-wrap justify-center
-                    p-7 w-screen ">
+                    p-7 w-full ">
                 <img src={depop} alt="depop logo"className="h-5 sm:h-8 mb-3 mx-5" />
                 <img src={facebook} alt="facebook logo"className="h-5 sm:h-8 mb-3 mx-5" />
                 <img src={gumtree} alt="gumtree logo"className="h-5 sm:h-8 mb-3 mx-5" />
                 <img src={ebay} alt="ebay logo"className="h-5 sm:h-8 mb-3 mx-5" />
-                <div className="sm:w-screen"/>
+                <div className="sm:w-full"/>
                 <img src={freecycle} alt="freecycle logo"className="h-5 sm:h-8 mb-3 mx-5" />
                 <img src={etsy} alt="etsy logo"className="h-5 sm:h-8 mb-3 mx-5" />
                 <img src={preloved} alt="preloved logo"className="h-5 sm:h-8 mb-3 mx-5" />
-                <p className="text-center text-sm w-screen italic">
+                <p className="text-center text-sm w-full italic">
                     ...and more coming!
                 </p>
         </div>
 
         <div className="
-            w-screen
+            w-full
             flex justify-center flex-wrap
         ">
             <div className="

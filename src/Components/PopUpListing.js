@@ -8,7 +8,7 @@ import imagePlaceholder from '../assets/gallery.png';
 import etsy from '../assets/Etsy.png'; 
 import trashnothing from '../assets/Freecycle.png';
 
-import heart from '../assets/heart.png';
+import heart from '../assets/heart.svg';
 import dummyImage from '../assets/dummyimage.jpg';
 import link from '../assets/link.png';
 import bookmark from '../assets/bookmark.png';
@@ -106,7 +106,6 @@ export class PopUpListing extends React.Component {
                     cursor-pointer
                     h-2/5 psm:h-4/9 sm:h-2/3 
                     w-1/9 sm:w-1/8 lg:w-1/6
-                    
                     flex flex-col justify-center
                     z-50 fixed top-1/6
 
@@ -201,16 +200,18 @@ export class PopUpListing extends React.Component {
                                 sm:block sm:flex-row-reverse flex 
                                 flex-row flex-nowrap inline-block">
 
-                                    <img className="
+                                    {/* <img className="
                                     inline
                                     h-4 m-0.5 mt-1.5
                                     flex-none 
                                     h-5
-                                    "src={bookmark}  alt=""/> 
+                                    "src={bookmark}  alt=""/>  */}
 
-                                    <img className="
+                                    <img 
+                                    style={{filter: "drop-shadow(1px 1px 1px #8E8E91)", webkitFilter: "drop-shadow(1px 1px 1px #8E8E91)"}}
+                                    className="
                                     inline
-                                    h-4 mr-1 mt-1.5 sm:mt-0.5
+                                    h-4 mr-1 mt-2 sm:mt-2
                                     flex-none
                                     h-5 
                                     "src={heart}  alt=""/> 
