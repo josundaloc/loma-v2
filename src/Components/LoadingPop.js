@@ -32,7 +32,7 @@ import { SkeletonListing } from './SkeletonListing'
 export class LoadingPop extends React.Component {
     render() {
         return (
-            <div className="w-full flex flex-wrap justify-center p-1">
+            <div className="max-w-screen-md flex flex-wrap justify-center content-center p-1 mx-auto">
                 <SkeletonListing />
                 <SkeletonListing />
                 <SkeletonListing />

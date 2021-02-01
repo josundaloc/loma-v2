@@ -94,7 +94,7 @@ export class PopUpSearchSettings extends React.Component {
                     <div 
                     onClick={this.props.toggleSearchSettings}
                     className="
-                    bg-coolGray-800 bg-opacity-80 h-full w-full fixed 
+                    bg-coolGray-800 bg-opacity-80 h-full w-screen fixed 
                     z-30">                        
                     </div>
 

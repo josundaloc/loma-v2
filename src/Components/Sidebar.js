@@ -14,7 +14,7 @@ export class Sidebar extends React.Component {
     
     render() {
         return (
-            <div className="w-20 lg:w-64 h-screen flex flex-col border-r">
+            <div className="w-20 lg:w-64 h-full flex flex-col border-r">
                 <div className="fixed w-20 lg:w-64 h-full ">
                 <a href="/">
                         <img src={logo180} alt="logo" 
@@ -26,27 +26,42 @@ export class Sidebar extends React.Component {
                             "
                         />
                 </a>
-                <div className="flex flex-row content-center justify-center lg:justify-start  lg:pl-4 py-3">
-                    <img src={search} className="w-5"/>
-                    <h3 className="hidden lg:block text-xl ml-6 my-auto font-semibold leading-none">Find</h3>
+                <div 
+                onClick={async () => {
+                    await this.props.toggleMainDisplay("Landing")}}
+                className="flex flex-row content-center justify-center lg:justify-start  lg:pl-4 py-3 cursor-pointer">
+                        <img src={search} className="w-5"/>
+                        <h3 className="hidden lg:block text-xl ml-6 my-auto font-semibold leading-none">Find</h3>
                 </div>
 
-                <div className="flex flex-row content-center justify-center lg:justify-start  lg:pl-4 py-3">
+                <div 
+                onClick={async () => {
+                    await this.props.toggleMainDisplay("Repairs")}}
+                className="flex flex-row content-center justify-center lg:justify-start  lg:pl-4 py-3 cursor-pointer">
                     <img src={fix} className="w-5"/>
                     <h3 className="hidden lg:block text-xl ml-6 my-auto font-semibold leading-none">Fix</h3>
                 </div>
 
-                <div className="flex flex-row content-center justify-center lg:justify-start  lg:pl-4 py-3">
+                <div 
+                onClick={async () => {
+                    await this.props.toggleMainDisplay("Community")}}
+                className="flex flex-row content-center justify-center lg:justify-start  lg:pl-4 py-3 cursor-pointer">
                     <img src={community} className="w-5"/>
                     <h3 className="hidden lg:block text-xl ml-6 my-auto font-semibold leading-none">Community Board</h3>
                 </div>
 
-                <div className="flex flex-row content-center justify-center lg:justify-start lg:pl-4 py-3">
+                <div 
+                onClick={async () => {
+                    await this.props.toggleMainDisplay("UserLikes")}}
+                className="flex flex-row content-center justify-center lg:justify-start lg:pl-4 py-3 cursor-pointer">
                     <img src={collections} className="w-5"/>
                     <h3 className="hidden lg:block text-xl ml-6 my-auto font-semibold leading-none">Collections</h3>
                 </div>
 
-                <div className="flex flex-row content-center justify-center lg:justify-start lg:pl-4 py-3">
+                <div 
+                onClick={async () => {
+                    await this.props.toggleMainDisplay("UserAccount")}}
+                className="flex flex-row content-center justify-center lg:justify-start lg:pl-4 py-3 cursor-pointer">
                     <img src={user} className="w-5"/>
                     <h3 className="hidden lg:block text-xl ml-6 my-auto font-semibold leading-none">Account</h3>
                 </div>

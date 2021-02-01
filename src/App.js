@@ -10,6 +10,9 @@ import { PopUpSearchSettings } from './Components/PopUpSearchSettings';
 import { PopUpLogSign } from './Components/PopUpLogSign';
 import { Sidebar } from './Components/Sidebar';
 import { UserLikes } from './Components/UserLikes';
+import { Repairs } from './Components/Repairs';
+import { UserAccount } from './Components/UserAccount';
+import { Community } from './Components/Community';
 
 
 import imagePlaceholder from './assets/gallery.png';
@@ -25,7 +28,7 @@ class App extends React.Component {
       AccessToken: "none",
       ExpiryDate: 0,
       resultsDisplay: "⚡️ Trending ⚡️",
-      mainDisplay: "Landing", // "Results"  //  "Loading" // "UserLikes"
+      mainDisplay: "Landing", // "Results"  //  "Loading" // "UserLikes" // "Landing"// "Repairs" //"UserAccount" // Community
       gridView: "Images Only", // "Image + Description"
       filters: {
         sites: {
@@ -73,6 +76,7 @@ class App extends React.Component {
     this.changeActiveListing = this.changeActiveListing.bind(this);
     this.toggleSearchSettings = this.toggleSearchSettings.bind(this);
     this.setSiteFilters = this.setSiteFilters.bind(this);
+    this.toggleMainDisplay = this.toggleMainDisplay.bind(this);
   }
 
   componentDidMount() {
@@ -268,6 +272,11 @@ class App extends React.Component {
     
   } //COMPONENT MOUNT ENDS
 
+  async toggleMainDisplay(newDisplay) {
+    await this.setState({
+      mainDisplay: newDisplay
+    })
+  } 
   async setSiteFilters(
     newSearchTerm, 
     eBayFilter, 
@@ -858,7 +867,7 @@ const setTrashNothingData = async () => {
 
   render() {
     return (
-      <div className="w-full flex flex-row mx-auto">
+      <div className="w-screen h-screen flex flex-row justify-center content-center mx-auto border">
         {/* Top layer for popups */}
         {this.state.popUpListing.display ? <PopUpListing changeActiveListing={this.changeActiveListing} display={this.state.popUpListing.display} listing={this.state.popUpListing.listing} togglePopUp={this.togglePopUp}/> : null}
         {this.state.popUpSearchSettings.display ? 
@@ -874,12 +883,14 @@ const setTrashNothingData = async () => {
         {this.state.popUpGeneral === "PopUpLogSign" ? <PopUpLogSign/>: null}
         {/* Top layer for popups ends */}
         <div className="w-full flex flex-row">
-          <div className="se:hidden sm:block"><Sidebar /></div>
+          <div className="se:hidden sm:block"><Sidebar toggleMainDisplay={this.toggleMainDisplay} /></div>
           <div className="w-full h-full bg-white overflow-x-hidden z-0">
-              <SearchBar onChange={this.handleChange} resultsDisplay={this.state.resultsDisplay} searchTerm={this.state.searchTerm}/>
-
+              {this.state.mainDisplay !== "UserLikes" && this.state.mainDisplay !== "Repairs" && this.state.mainDisplay !== "UserAccount" && this.state.mainDisplay !== "Community"? <SearchBar onChange={this.handleChange} toggleMainDisplay={this.toggleMainDisplay} resultsDisplay={this.state.resultsDisplay} searchTerm={this.state.searchTerm}/> : null}
               {this.state.mainDisplay === "Landing" ? <Landing /> : null}
-              {this.state.mainDisplay === "UserLikes" ? <UserLikes /> : null}
+              {this.state.mainDisplay === "Repairs" ? <Repairs toggleMainDisplay={this.toggleMainDisplay} /> : null}
+              {this.state.mainDisplay === "Community" ? <Community toggleMainDisplay={this.toggleMainDisplay} /> : null}
+              {this.state.mainDisplay === "UserLikes" ? <UserLikes toggleMainDisplay={this.toggleMainDisplay} /> : null}
+              {this.state.mainDisplay === "UserAccount" ? <UserAccount toggleMainDisplay={this.toggleMainDisplay} /> : null}
               {this.state.mainDisplay === "Loading" ? <LoadingPop /> : null}
               {this.state.mainDisplay === "Results" ? <Results Data={this.state.Data}
                       resultsDisplay={this.state.resultsDisplay}

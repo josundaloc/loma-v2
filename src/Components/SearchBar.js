@@ -3,6 +3,8 @@ import logo180 from '../assets/logo180.png';
 import user from '../assets/user.svg';
 import menu from '../assets/menu.svg';
 import search from '../assets/white-search.svg';
+
+import { TopNav } from './TopNav';
 //import './SearchBar.css';
 
 export class SearchBar extends React.Component {
@@ -67,25 +69,7 @@ export class SearchBar extends React.Component {
     render() {
         return (
             <div className="max-w-screen-md mx-auto px-3 flex flex-col justify-center">
-                    <div className ="sm:hidden
-                    w-full flex flex-row flex-wrap justify-between items-center
-                    ">
-                        <img 
-                        className="h-7"    
-                        src={menu}/>
-                        <a href="/">
-                        <img src={logo180} alt="logo" 
-                            className="
-                                h-12 py-3
-                                block
-                            "
-                        />
-                        </a>
-                        <img
-                        className="h-7"    
-                        src={user}/>
-
-                    </div>
+                    <div><TopNav toggleMainDisplay={this.props.toggleMainDisplay}/></div>
 
                     <div className="
                     w-full h-8 flex flex-row no-wrap sm:mt-4 lg:mt-7">
