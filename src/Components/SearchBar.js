@@ -68,7 +68,7 @@ export class SearchBar extends React.Component {
 
     render() {
         return (
-            <div className="max-w-screen-md mx-auto px-3 flex flex-col justify-center">
+            <div className="max-w-screen-md mx-auto flex flex-col justify-center">
                     <div><TopNav toggleMainDisplay={this.props.toggleMainDisplay}/></div>
 
                     <div className="

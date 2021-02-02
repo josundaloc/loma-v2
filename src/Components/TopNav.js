@@ -20,7 +20,7 @@ export class TopNav extends React.Component {
 
     render() {
         return (
-        <div>
+        <div className="bg-blue-50">
             {this.state.displaySidebar ? <PopUpSidebar toggleSideBar={this.toggleSideBar} toggleMainDisplay={this.props.toggleMainDisplay}/> : null}
             <div className="max-w-screen-md flex flex-col justify-center content-center mx-auto">
                 <div className ="sm:hidden
@@ -28,7 +28,7 @@ export class TopNav extends React.Component {
                 ">
                     <img 
                     onClick={this.toggleSideBar}
-                    className="h-7"    
+                    className="h-7 pl-3"    
                     src={menu}/>
                     <a href="/">
                     <img src={logo180} alt="logo" 
@@ -39,7 +39,7 @@ export class TopNav extends React.Component {
                     />
                     </a>
                     <img
-                    className="h-7 opacity-0"    
+                    className="h-7 pr-3 opacity-0"    
                     src={user}/>
 
                 </div>

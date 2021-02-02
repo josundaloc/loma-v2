@@ -50,7 +50,7 @@ class App extends React.Component {
         display: false,
         listing: {}
       },
-      popUpGeneral: null, //"PopUpLogSign",
+      popUpGeneral: "PopUpLogSign", //"PopUpLogSign", null
       popUpSearchSettings: {
         display: false,
         maxResultPrice: 1000
