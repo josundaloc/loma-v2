@@ -13,6 +13,7 @@ import { UserLikes } from './Components/UserLikes'
 import { Repairs } from './Components/Repairs'
 import { UserAccount } from './Components/UserAccount'
 import { Community } from './Components/Community'
+import { checkIfSignInByLink, isUserSignedIn } from './feature/login'
 
 import imagePlaceholder from './assets/gallery.png'
 
@@ -48,7 +49,7 @@ class App extends React.Component {
         display: false,
         listing: {},
       },
-      popUpGeneral: 'PopUpLogSign', //"PopUpLogSign", null
+      popUpGeneral: null,
       popUpSearchSettings: {
         display: false,
         maxResultPrice: 1000,
@@ -78,6 +79,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    checkIfSignInByLink().then(({ ok }) => {
+      if (ok) {
+        this.setState({ popUpGeneral: null })
+      }
+    })
     /////////FUNCTIONS AND CONSTANTS
     const appLoaded = Date.now()
     const getEbayAccessToken = () => {
@@ -366,6 +372,11 @@ class App extends React.Component {
         },
       })
     } else {
+      console.log(listing)
+      if (!isUserSignedIn()) {
+        this.setState({ popUpGeneral: 'PopUpLogSign' })
+        return
+      }
       this.setState({
         popUpListing: {
           display: true,
