@@ -37,19 +37,15 @@ export class UserLikes extends React.Component {
           className="results p-1 max-w-screen-md h-screen
                     w-full flex flex-col flex-wrap justify-center content-center"
         >
-          <div
-            className="
-                        bg-yellow-50 -mt-32 h-52 w-52 rounded-full flex flex-col justify-center content-center"
-          >
-            <h3 className="text-7xl mb-1 text-center">👍</h3>
-            {this.state.data.map((item) => (
-              <p className="p-3 text-center italic text-sm text-yellow-600">
-                {item.description}
-                {item.url}
-                {item.image}
-              </p>
-            ))}
-          </div>
+          {this.state.Data.map((listing) => {
+            return (
+              <Listing
+                togglePopUp={this.props.togglePopUp}
+                gridView={this.props.gridView}
+                listing={listing}
+              />
+            )
+          })}
         </div>
       </div>
     )

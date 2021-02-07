@@ -965,7 +965,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="w-screen h-screen flex flex-row justify-center content-center mx-auto border">
+      <div className="max-w-screen-lg h-screen flex flex-row justify-center content-center mx-auto">
         {/* Top layer for popups */}
         {this.state.popUpListing.display ? (
           <PopUpListing
@@ -992,7 +992,7 @@ class App extends React.Component {
           <div className="se:hidden sm:block">
             <Sidebar toggleMainDisplay={this.toggleMainDisplay} />
           </div>
-          <div className="w-full h-full bg-white overflow-x-hidden z-0">
+          <div className="w-full h-full bg-white overflow-x-hidden z-0 border-r">
             {this.state.mainDisplay !== 'UserLikes' &&
             this.state.mainDisplay !== 'Repairs' &&
             this.state.mainDisplay !== 'UserAccount' &&
