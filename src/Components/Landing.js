@@ -47,7 +47,7 @@ export class Landing extends React.Component {
                 "
             >
               Find things that you love from all the top sites. Get them
-              repaired, refreshed or upgraded a few clicks away.
+              repaired, refreshed or upgraded just a few clicks away.
             </p>
 
             <p

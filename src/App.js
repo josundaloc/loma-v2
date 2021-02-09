@@ -28,7 +28,7 @@ class App extends React.Component {
       ExpiryDate: 0,
       resultsDisplay: '⚡️ Trending ⚡️',
       mainDisplay: 'Landing', // "Results"  //  "Loading" // "UserLikes" // "Landing"// "Repairs" //"UserAccount" // Community
-      gridView: 'Images Only', // "Image + Description"
+      gridView: 'Image + Description', //'Images Only', // "Image + Description"
       filters: {
         sites: {
           ebay: true,
@@ -175,7 +175,7 @@ class App extends React.Component {
       console.log('getting depop data')
 
       const depop_url =
-        'https://api.apify.com/v2/datasets/ml97NZifdmN1EFUSb/items?clean=true&format=json'
+        'https://api.apify.com/v2/datasets/F9xfq2ip1WN0hIHKh/items?H4FHJb2qhqB6Td93i~depop-uk'
       const depopResponse = await fetch(depop_url)
       const depopData = await depopResponse.json()
 
@@ -190,7 +190,7 @@ class App extends React.Component {
         }
       })
 
-      this.setState({
+      await this.setState({
         depopData: {
           data: depopDataParsed,
           status: 'resolved',
@@ -203,6 +203,8 @@ class App extends React.Component {
         'depop data has been set, it took this many milliseconds: ' +
           depopDataSetTime
       )
+
+      console.log(this.state.depopData.data[0])
     }
 
     ///
@@ -211,7 +213,7 @@ class App extends React.Component {
       console.log('getting gumtree data')
 
       const gumtree_url =
-        'https://api.apify.com/v2/datasets/Dh5XzAb9fvidWw285/items?format=json&clean=1'
+        'https://api.apify.com/v2/datasets/aAVHXcypcKkmWEbZF/items?H4FHJb2qhqB6Td93i~gumtree-uk'
       const gumtreeResponse = await fetch(gumtree_url)
       const gumtreeData = await gumtreeResponse.json()
 
@@ -238,6 +240,8 @@ class App extends React.Component {
         'gumtree data has been set, it took this many milliseconds: ' +
           gumtreeDataSetTime
       )
+
+      console.log(this.state.gumtreeData.data[0])
     }
 
     ///
@@ -246,7 +250,7 @@ class App extends React.Component {
       console.log('getting facebook data')
 
       const facebook_url =
-        'https://api.apify.com/v2/datasets/IitkxYE95yydtzFlk/items?clean=true&format=json'
+        'https://api.apify.com/v2/datasets/IitkxYE95yydtzFlk/items?H4FHJb2qhqB6Td93i~facebook-uk'
       const facebookResponse = await fetch(facebook_url)
       const facebookData = await facebookResponse.json()
 
@@ -261,7 +265,7 @@ class App extends React.Component {
         }
       })
 
-      this.setState({
+      await this.setState({
         facebookData: {
           data: facebookDataParsed,
           status: 'resolved',
@@ -274,15 +278,17 @@ class App extends React.Component {
         'facebook data has been set, it took this many milliseconds: ' +
           facebookDataSetTime
       )
+
+      console.log(this.state.facebookData.data[0])
     }
 
     ///////
-    // getEbayAccessToken();
-    // getDepopData();
-    // getGumtreeData();
-    // getFacebookData();
-    // hotjar.initialize(2123002,6);
-    // console.log("access token" +  this.state.AccessToken);
+    // getEbayAccessToken()
+    // console.log('access token' + this.state.AccessToken)
+    // getDepopData()
+    // getGumtreeData()
+    // getFacebookData()
+    // hotjar.initialize(2123002, 6)
   } //COMPONENT MOUNT ENDS
 
   async toggleMainDisplay(newDisplay) {
@@ -373,10 +379,6 @@ class App extends React.Component {
       })
     } else {
       console.log(listing)
-      if (!isUserSignedIn()) {
-        this.setState({ popUpGeneral: 'PopUpLogSign' })
-        return
-      }
       this.setState({
         popUpListing: {
           display: true,
@@ -626,7 +628,7 @@ class App extends React.Component {
     const setDepopData = async () => {
       if (this.state.depopData.status === 'unresolved') {
         const depop_url =
-          'https://api.apify.com/v2/datasets/ml97NZifdmN1EFUSb/items?clean=true&format=json'
+          'https://api.apify.com/v2/datasets/F9xfq2ip1WN0hIHKh/items?H4FHJb2qhqB6Td93i~depop-uk'
         const depopResponse = await fetch(depop_url)
         const depopData = await depopResponse.json()
         const depopDataFiltered = depopData.filter((listing) => {
@@ -706,24 +708,19 @@ class App extends React.Component {
     }
 
     const setGumtreeData = async () => {
-      if (this.state.gumtreeData.status === 'unresolved') {
-        const gumtree_url =
-          'https://api.apify.com/v2/datasets/Dh5XzAb9fvidWw285/items?format=json&clean=1'
-        const gumtreeResponse = await fetch(gumtree_url)
-        const gumtreeData = await gumtreeResponse.json()
-        const gumtreeDataFiltered = gumtreeData.filter((listing) => {
+      const filterGumtreeData = async () => {
+        if (this.state.gumtreeData.data) {
+          console.log('gumtree data is not empty')
+        }
+        const filteredData = this.state.gumtreeData.data.filter((listing) => {
           if (
-            isNull(listing.title)
-              .toLowerCase()
-              .includes(this.state.searchTerm) &&
+            listing.title.toLowerCase().includes(this.state.searchTerm) &&
             listing.price >= this.state.filters.range.min &&
             listing.price <= this.state.filters.range.max
           ) {
             return true
           } else if (
-            isNull(listing.description)
-              .toLowerCase()
-              .includes(this.state.searchTerm) &&
+            listing.description.toLowerCase().includes(this.state.searchTerm) &&
             listing.price >= this.state.filters.range.min &&
             listing.price <= this.state.filters.range.max
           ) {
@@ -733,7 +730,19 @@ class App extends React.Component {
           }
         })
 
-        const gumtreeDataParsed = gumtreeDataFiltered.map((listing) => {
+        await this.setState((prevState) => ({
+          mainDisplay: 'Results',
+          Data: [...prevState.Data, ...filteredData],
+        }))
+      }
+
+      const getGumtreeData = async () => {
+        const gumtree_url =
+          'https://api.apify.com/v2/datasets/aAVHXcypcKkmWEbZF/items?H4FHJb2qhqB6Td93i~gumtree-uk'
+        const gumtreeResponse = await fetch(gumtree_url)
+        const gumtreeData = await gumtreeResponse.json()
+
+        const gumtreeDataParsed = await gumtreeData.map((listing) => {
           return {
             title: listing.title,
             price: listing.price.substring(1),
@@ -745,129 +754,24 @@ class App extends React.Component {
         })
 
         this.setState({
-          depopData: {
+          gumtreeData: {
             data: gumtreeDataParsed,
             status: 'resolved',
           },
         })
-
-        this.setState((prevState) => ({
-          mainDisplay: 'Results',
-          Data: [...prevState.Data, ...gumtreeDataFiltered],
-        }))
-        this.reOrderDisplay(this.state.resultsDisplay)
-      } else {
-        const gumtreeDataFiltered = this.state.gumtreeData.data.filter(
-          (listing) => {
-            if (
-              isNull(listing.title)
-                .toLowerCase()
-                .includes(this.state.searchTerm) &&
-              listing.price >= this.state.filters.range.min &&
-              listing.price <= this.state.filters.range.max
-            ) {
-              return true
-            } else if (
-              isNull(listing.description)
-                .toLowerCase()
-                .includes(this.state.searchTerm) &&
-              listing.price >= this.state.filters.range.min &&
-              listing.price <= this.state.filters.range.max
-            ) {
-              return true
-            } else {
-              return false
-            }
-          }
-        )
-        this.setState((prevState) => ({
-          Data: [...prevState.Data, ...gumtreeDataFiltered],
-        }))
-        this.reOrderDisplay(this.state.resultsDisplay)
       }
+
+      if (this.state.gumtreeData.status === 'unresolved') {
+        await getGumtreeData()
+        await filterGumtreeData()
+      } else {
+        await filterGumtreeData()
+      }
+
+      await this.reOrderDisplay(this.state.resultsDisplay)
     }
 
-    const setFacebookData = async () => {
-      if (this.state.facebookData.status === 'unresolved') {
-        const facebook_url =
-          'https://api.apify.com/v2/datasets/IitkxYE95yydtzFlk/items?clean=true&format=json'
-        const facebookResponse = await fetch(facebook_url)
-        const facebookData = await facebookResponse.json()
-        const facebookDataFiltered = facebookData.filter((listing) => {
-          if (
-            isNull(listing.title)
-              .toLowerCase()
-              .includes(this.state.searchTerm) &&
-            listing.price >= this.state.filters.range.min &&
-            listing.price <= this.state.filters.range.max
-          ) {
-            return true
-          } else if (
-            isNull(listing.description)
-              .toLowerCase()
-              .includes(this.state.searchTerm) &&
-            listing.price >= this.state.filters.range.min &&
-            listing.price <= this.state.filters.range.max
-          ) {
-            return true
-          } else {
-            return false
-          }
-        })
-
-        const facebookDataParsed = facebookDataFiltered.map((listing) => {
-          return {
-            title: '' + isNull(listing.title),
-            price: '' + facebookPriceParsed(listing.price),
-            description: '' + isNull(listing.description),
-            image: '' + missingImagesFiltered(listing.image),
-            url: '' + isNull(listing.url),
-            site: 'facebook',
-          }
-        })
-
-        this.setState({
-          facebookData: {
-            data: facebookDataParsed,
-            status: 'resolved',
-          },
-        })
-
-        this.setState((prevState) => ({
-          mainDisplay: 'Results',
-          Data: [...prevState.Data, ...facebookDataFiltered],
-        }))
-        this.reOrderDisplay(this.state.resultsDisplay)
-      } else {
-        const facebookDataFiltered = this.state.facebookData.data.filter(
-          (listing) => {
-            if (
-              isNull(listing.title)
-                .toLowerCase()
-                .includes(this.state.searchTerm) &&
-              listing.price >= this.state.filters.range.min &&
-              listing.price <= this.state.filters.range.max
-            ) {
-              return true
-            } else if (
-              isNull(listing.description)
-                .toLowerCase()
-                .includes(this.state.searchTerm) &&
-              listing.price >= this.state.filters.range.min &&
-              listing.price <= this.state.filters.range.max
-            ) {
-              return true
-            } else {
-              return false
-            }
-          }
-        )
-        this.setState((prevState) => ({
-          Data: [...prevState.Data, ...facebookDataFiltered],
-        }))
-        this.reOrderDisplay(this.state.resultsDisplay)
-      }
-    }
+    const setFacebookData = async () => {}
 
     const setEtsyData = async () => {
       const etsyRaw = await fetch(
@@ -942,17 +846,17 @@ class App extends React.Component {
       setEbayData()
     }
 
-    if (this.state.filters.sites.depop) {
-      setDepopData()
-    }
+    // if (this.state.filters.sites.depop) {
+    //   setDepopData()
+    // }
 
     if (this.state.filters.sites.gumtree) {
       setGumtreeData()
     }
 
-    if (this.state.filters.sites.facebook) {
-      setFacebookData()
-    }
+    // if (this.state.filters.sites.facebook) {
+    //   setFacebookData()
+    // }
 
     if (this.state.filters.sites.etsy) {
       setEtsyData()

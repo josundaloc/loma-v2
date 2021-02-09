@@ -79,7 +79,7 @@ export class SearchBar extends React.Component {
         >
           <input
             type="text"
-            placeholder="Ex. white converse size 7"
+            placeholder='Try "white converse size 7"'
             id="searchQuery"
             className="w-full text-center text-sm italic pt-0.5 border border-r-0 rounded-tl-lg rounded-bl-lg"
           ></input>

@@ -24,7 +24,7 @@ export class Repairs extends React.Component {
           Fix
         </h1>
         <p className="px-3 italic text-sm text-gray-500">
-          Book repair, refurbish or upgrade here:
+          Book repair, refurbish or upgrade services here:
         </p>
 
         <div className="">
@@ -32,20 +32,44 @@ export class Repairs extends React.Component {
             Clothing
           </button>
 
-          <div
-            onClick={() => {
-              window.open('https://apps.apple.com/gb/app/sojo/id1542002553')
-            }}
-            className="w-44 h-60 border m-3 rounded-md"
-          >
-            <img src={sojo} className="w-full rounded-t" />
-            <div className="p-2">
-              <h1 className="font-bold">Sojo</h1>
-              <p className="italic text-gray-600 text-xs">
-                Think 'Deliveroo' but for alterations. 🚲
-              </p>
+          <div className="w-full flex flex-row bg-gray-50 mt-2 ">
+            <div
+              onClick={() => {
+                window.open('https://apps.apple.com/gb/app/sojo/id1542002553')
+              }}
+              className="w-44 h-60 border m-3 rounded-md"
+            >
+              <img src={sojo} className="w-full rounded-t" />
+              <div className="p-2">
+                <h1 className="font-bold">Sojo</h1>
+                <p className="italic text-gray-600 text-xs">
+                  Think 'Deliveroo' but for alterations. 🚲
+                </p>
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                window.open('https://apps.apple.com/gb/app/sojo/id1542002553')
+              }}
+              className="w-44 h-60 border my-3 mx-1.5 rounded-md"
+            >
+              <img src={sojo} className="w-full rounded-t" />
+              <div className="p-2">
+                <h1 className="font-bold">Sojo</h1>
+                <p className="italic text-gray-600 text-xs">
+                  Think 'Deliveroo' but for alterations. 🚲
+                </p>
+              </div>
             </div>
           </div>
+        </div>
+        <div className="px-3 w-full h-20 flex flex-col justify-center items-center mt-10 bg-gray-50">
+          <text className="text-xl font-bold italic text-gray-700">
+            More services coming soon.
+          </text>
+          <p className="text-sm text-gray-500 italic">
+            If you'd like to be one of them. Get in touch via our email below.
+          </p>
         </div>
       </div>
     )
