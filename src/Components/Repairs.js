@@ -51,7 +51,7 @@ export class Repairs extends React.Component {
               onClick={() => {
                 window.open('https://apps.apple.com/gb/app/sojo/id1542002553')
               }}
-              className="w-44 h-60 border my-3 mx-1.5 rounded-md"
+              className="hidden w-44 h-60 border my-3 mx-1.5 rounded-md"
             >
               <img src={sojo} className="w-full rounded-t" />
               <div className="p-2">

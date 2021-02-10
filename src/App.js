@@ -19,6 +19,52 @@ import imagePlaceholder from './assets/gallery.png'
 
 import { hotjar } from 'react-hotjar'
 
+//////<ALL FUNCTIONS
+
+/////////FUNCTIONS AND CONSTANTS
+const appLoaded = Date.now()
+
+///////<DATA CLEANERS>
+const isNull = (property) => {
+  if (property === null || property === undefined) {
+    return '~'
+  } else {
+    return property
+  }
+}
+
+const facebookPriceParsed = (price) => {
+  let rawPrice = price.substring(1)
+  if (!price || price === 'FREE') {
+    return '0'
+  } else if (price === 'See listings near me') {
+    return '~'
+  } else if (!rawPrice.includes('£')) {
+    return rawPrice
+  } else if (rawPrice.includes('£')) {
+    return rawPrice.substring(0, rawPrice.indexOf('£'))
+  }
+}
+
+const isPriceNull = (price) => {
+  if (price === undefined || price === null) {
+    return '~'
+  } else {
+    return price.substring(1)
+  }
+}
+
+const missingImagesFiltered = (imageProp) => {
+  if (imageProp === null || imageProp === undefined) {
+    return imagePlaceholder
+  } else {
+    return imageProp
+  }
+}
+///////</DATA CLEANERS END>
+
+//////>ALL FUNCTIONS
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -63,7 +109,7 @@ class App extends React.Component {
         status: 'unresolved',
       },
       facebookData: {
-        data: [{ nothing: 'none' }],
+        data: [],
         status: 'unresolved',
       },
     }
@@ -76,6 +122,10 @@ class App extends React.Component {
     this.toggleSearchSettings = this.toggleSearchSettings.bind(this)
     this.setSiteFilters = this.setSiteFilters.bind(this)
     this.toggleMainDisplay = this.toggleMainDisplay.bind(this)
+    this.getEbayAccessToken = this.getEbayAccessToken.bind(this)
+    this.getDepopData = this.getDepopData.bind(this)
+    this.getGumtreeData = this.getGumtreeData.bind(this)
+    this.getFacebookData = this.getFacebookData.bind(this)
   }
 
   componentDidMount() {
@@ -84,212 +134,190 @@ class App extends React.Component {
         this.setState({ popUpGeneral: null })
       }
     })
-    /////////FUNCTIONS AND CONSTANTS
-    const appLoaded = Date.now()
-    const getEbayAccessToken = () => {
-      if (Date.now() > this.state.ExpiryDate) {
-        console.log(
-          'this app does not have an access token, getting access token'
-        )
-
-        var myHeaders = new Headers()
-        myHeaders.append(
-          'Authorization',
-          'Basic Sm9zZXBoVW4tTG9tYS1QUkQtMTk5YWQwZDkwLWY0Y2QyYjg4OlBSRC05OWFkMGQ5MDRiYjEtZjYzMS00OGMyLTkwNTQtYTQ5Yg=='
-        )
-        myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
-        myHeaders.append(
-          'Cookie',
-          'ebay=%5Esbf%3D%23%5E; dp1=bu1p/QEBfX0BAX19AQA**6379634c^'
-        )
-
-        var urlencoded = new URLSearchParams()
-        urlencoded.append('grant_type', 'client_credentials')
-        urlencoded.append('scope', 'https://api.ebay.com/oauth/api_scope')
-
-        var requestOptions = {
-          method: 'POST',
-          headers: myHeaders,
-          body: urlencoded,
-          redirect: 'follow',
-        }
-
-        fetch(
-          'https://loma-cors.herokuapp.com/https://api.ebay.com/identity/v1/oauth2/token',
-          requestOptions
-        )
-          .then((response) => response.json())
-          .then((jsonresponse) => {
-            this.setState({
-              AccessToken: jsonresponse.access_token,
-              ExpiryDate: Date.now() + jsonresponse.expires_in * 1000,
-            })
-            let accessTokenSet = Date.now() - appLoaded
-            console.log(
-              `apiAccessToken = ${this.state.AccessToken}, took ${accessTokenSet} milliseconds`
-            )
-          })
-          .catch((error) => console.log('error', error))
-      }
-    }
-
-    ///////<DATA CLEANERS>
-    const isNull = (property) => {
-      if (property === null || property === undefined) {
-        return ' '
-      } else {
-        return property
-      }
-    }
-
-    const facebookPriceParsed = (price) => {
-      let rawPrice = price.substring(1)
-      if (!price || price === 'FREE') {
-        return '0'
-      } else if (price === 'See listings near me') {
-        return '~'
-      } else if (!rawPrice.includes('£')) {
-        return rawPrice
-      } else if (rawPrice.includes('£')) {
-        return rawPrice.substring(0, rawPrice.indexOf('£'))
-      }
-    }
-
-    const isPriceNull = (price) => {
-      if (price === undefined || price === null) {
-        return '~'
-      } else {
-        return price.substring(1)
-      }
-    }
-
-    const missingImagesFiltered = (imageProp) => {
-      if (imageProp === null || imageProp === undefined) {
-        return imagePlaceholder
-      } else {
-        return imageProp
-      }
-    }
-    ///////</DATA CLEANERS END>
-    const getDepopData = async () => {
-      console.log('getting depop data')
-
-      const depop_url =
-        'https://api.apify.com/v2/datasets/F9xfq2ip1WN0hIHKh/items?H4FHJb2qhqB6Td93i~depop-uk'
-      const depopResponse = await fetch(depop_url)
-      const depopData = await depopResponse.json()
-
-      const depopDataParsed = await depopData.map((listing) => {
-        return {
-          title: isNull(listing.title),
-          price: isPriceNull(listing.price),
-          description: isNull(listing.description),
-          image: isNull(missingImagesFiltered(listing.image)),
-          url: isNull(listing.url),
-          site: 'depop',
-        }
-      })
-
-      await this.setState({
-        depopData: {
-          data: depopDataParsed,
-          status: 'resolved',
-        },
-      })
-
-      let depopDataSetTime = Date.now() - appLoaded
-
-      console.log(
-        'depop data has been set, it took this many milliseconds: ' +
-          depopDataSetTime
-      )
-
-      console.log(this.state.depopData.data[0])
-    }
-
-    ///
-
-    const getGumtreeData = async () => {
-      console.log('getting gumtree data')
-
-      const gumtree_url =
-        'https://api.apify.com/v2/datasets/aAVHXcypcKkmWEbZF/items?H4FHJb2qhqB6Td93i~gumtree-uk'
-      const gumtreeResponse = await fetch(gumtree_url)
-      const gumtreeData = await gumtreeResponse.json()
-
-      const gumtreeDataParsed = await gumtreeData.map((listing) => {
-        return {
-          title: listing.title,
-          price: listing.price.substring(1),
-          description: listing.description,
-          image: missingImagesFiltered(listing.image),
-          url: listing.url,
-          site: 'gumtree',
-        }
-      })
-
-      this.setState({
-        gumtreeData: {
-          data: gumtreeDataParsed,
-          status: 'resolved',
-        },
-      })
-      let gumtreeDataSetTime = Date.now() - appLoaded
-
-      console.log(
-        'gumtree data has been set, it took this many milliseconds: ' +
-          gumtreeDataSetTime
-      )
-
-      console.log(this.state.gumtreeData.data[0])
-    }
-
-    ///
-
-    const getFacebookData = async () => {
-      console.log('getting facebook data')
-
-      const facebook_url =
-        'https://api.apify.com/v2/datasets/IitkxYE95yydtzFlk/items?H4FHJb2qhqB6Td93i~facebook-uk'
-      const facebookResponse = await fetch(facebook_url)
-      const facebookData = await facebookResponse.json()
-
-      const facebookDataParsed = facebookData.map((listing) => {
-        return {
-          title: '' + isNull(listing.title),
-          price: '' + facebookPriceParsed(listing.price),
-          description: '' + isNull(listing.description),
-          image: '' + missingImagesFiltered(listing.image),
-          url: '' + isNull(listing.url),
-          site: 'facebook',
-        }
-      })
-
-      await this.setState({
-        facebookData: {
-          data: facebookDataParsed,
-          status: 'resolved',
-        },
-      })
-
-      let facebookDataSetTime = Date.now() - appLoaded
-
-      console.log(
-        'facebook data has been set, it took this many milliseconds: ' +
-          facebookDataSetTime
-      )
-
-      console.log(this.state.facebookData.data[0])
-    }
 
     ///////
-    // getEbayAccessToken()
+    this.getEbayAccessToken()
     // console.log('access token' + this.state.AccessToken)
-    // getDepopData()
-    // getGumtreeData()
-    // getFacebookData()
+    this.getDepopData()
+    this.getGumtreeData()
+    this.getFacebookData()
     // hotjar.initialize(2123002, 6)
   } //COMPONENT MOUNT ENDS
+
+  async filterApifyData(stateData) {
+    if (stateData.length > 0) {
+      const filteredData = stateData.filter((listing) => {
+        if (
+          listing.title.toLowerCase().includes(this.state.searchTerm) &&
+          facebookPriceParsed(listing.price) >= this.state.filters.range.min &&
+          facebookPriceParsed(listing.price) <= this.state.filters.range.max
+        ) {
+          return true
+        } else if (
+          listing.description.toLowerCase().includes(this.state.searchTerm) &&
+          facebookPriceParsed(listing.price) >= this.state.filters.range.min &&
+          facebookPriceParsed(listing.price) <= this.state.filters.range.max
+        ) {
+          return true
+        } else {
+          return false
+        }
+      })
+
+      await this.setState((prevState) => ({
+        mainDisplay: 'Results',
+        Data: [...prevState.Data, ...filteredData],
+      }))
+    }
+  }
+
+  async getFacebookData() {
+    const facebook_url =
+      'https://api.apify.com/v2/datasets/IitkxYE95yydtzFlk/items?H4FHJb2qhqB6Td93i~facebook-uk'
+
+    const facebookResponse = await fetch(facebook_url)
+    const facebookData = await facebookResponse.json()
+
+    const facebookDataParsed = await facebookData.map((listing) => {
+      return {
+        title: isNull(listing.title),
+        price: facebookPriceParsed(listing.price),
+        description: isNull(listing.description),
+        image: missingImagesFiltered(listing.image),
+        url: listing.url,
+        site: 'facebook',
+      }
+    })
+
+    await this.setState({
+      facebookData: {
+        data: facebookDataParsed,
+        status: 'resolved',
+      },
+    })
+
+    let facebookDataSetTime = Date.now() - appLoaded
+
+    console.log(
+      'facebook data has been set, this how many items there are' +
+        this.state.facebookData.data.length
+    )
+  }
+
+  async getGumtreeData() {
+    console.log('getting gumtree data')
+
+    const gumtree_url =
+      'https://api.apify.com/v2/datasets/aAVHXcypcKkmWEbZF/items?H4FHJb2qhqB6Td93i~gumtree-uk'
+    const gumtreeResponse = await fetch(gumtree_url)
+    const gumtreeData = await gumtreeResponse.json()
+
+    const gumtreeDataParsed = await gumtreeData.map((listing) => {
+      return {
+        title: isNull(listing.title),
+        price: isPriceNull(listing.price.substring(1)),
+        description: isNull(listing.description),
+        image: missingImagesFiltered(listing.image),
+        url: listing.url,
+        site: 'gumtree',
+      }
+    })
+
+    await this.setState({
+      gumtreeData: {
+        data: gumtreeDataParsed,
+        status: 'resolved',
+      },
+    })
+
+    let gumtreeDataSetTime = Date.now() - appLoaded
+
+    console.log(
+      'gumtree data has been set, it took this many milliseconds: ' +
+        gumtreeDataSetTime
+    )
+  }
+
+  async getDepopData() {
+    console.log('getting depop data')
+
+    const depop_url =
+      'https://api.apify.com/v2/datasets/F9xfq2ip1WN0hIHKh/items?H4FHJb2qhqB6Td93i~depop-uk'
+    const depopResponse = await fetch(depop_url)
+    const depopData = await depopResponse.json()
+
+    const depopDataParsed = await depopData.map((listing) => {
+      return {
+        title: isNull(listing.title),
+        price: isPriceNull(listing.price),
+        description: isNull(listing.description),
+        image: missingImagesFiltered(listing.image),
+        url: isNull(listing.url),
+        site: 'depop',
+      }
+    })
+
+    await this.setState({
+      depopData: {
+        data: depopDataParsed,
+        status: 'resolved',
+      },
+    })
+
+    let depopDataSetTime = Date.now() - appLoaded
+
+    console.log(
+      'depop data has been set, it took this many milliseconds: ' +
+        depopDataSetTime
+    )
+  }
+
+  async getEbayAccessToken() {
+    if (Date.now() > this.state.ExpiryDate) {
+      console.log(
+        'this app does not have an access token, getting access token'
+      )
+
+      var myHeaders = new Headers()
+      myHeaders.append(
+        'Authorization',
+        'Basic Sm9zZXBoVW4tTG9tYS1QUkQtMTk5YWQwZDkwLWY0Y2QyYjg4OlBSRC05OWFkMGQ5MDRiYjEtZjYzMS00OGMyLTkwNTQtYTQ5Yg=='
+      )
+      myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
+      myHeaders.append(
+        'Cookie',
+        'ebay=%5Esbf%3D%23%5E; dp1=bu1p/QEBfX0BAX19AQA**6379634c^'
+      )
+
+      var urlencoded = new URLSearchParams()
+      urlencoded.append('grant_type', 'client_credentials')
+      urlencoded.append('scope', 'https://api.ebay.com/oauth/api_scope')
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow',
+      }
+
+      fetch(
+        'https://loma-cors.herokuapp.com/https://api.ebay.com/identity/v1/oauth2/token',
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((jsonresponse) => {
+          this.setState({
+            AccessToken: jsonresponse.access_token,
+            ExpiryDate: Date.now() + jsonresponse.expires_in * 1000,
+          })
+          let accessTokenSet = Date.now() - appLoaded
+          console.log(
+            `apiAccessToken = ${this.state.AccessToken}, took ${accessTokenSet} milliseconds`
+          )
+        })
+        .catch((error) => console.log('error', error))
+    }
+  }
 
   async toggleMainDisplay(newDisplay) {
     await this.setState({
@@ -626,152 +654,37 @@ class App extends React.Component {
     }
 
     const setDepopData = async () => {
+      //timeline
       if (this.state.depopData.status === 'unresolved') {
-        const depop_url =
-          'https://api.apify.com/v2/datasets/F9xfq2ip1WN0hIHKh/items?H4FHJb2qhqB6Td93i~depop-uk'
-        const depopResponse = await fetch(depop_url)
-        const depopData = await depopResponse.json()
-        const depopDataFiltered = depopData.filter((listing) => {
-          if (
-            isNull(listing.title)
-              .toLowerCase()
-              .includes(this.state.searchTerm) &&
-            listing.price >= this.state.filters.range.min &&
-            listing.price <= this.state.filters.range.max
-          ) {
-            return true
-          } else if (
-            isNull(listing.description)
-              .toLowerCase()
-              .includes(this.state.searchTerm) &&
-            listing.price >= this.state.filters.range.min &&
-            listing.price <= this.state.filters.range.max
-          ) {
-            return true
-          } else {
-            return false
-          }
-        })
-
-        const depopDataParsed = depopDataFiltered.map((listing) => {
-          return {
-            title: isNull(listing.title),
-            price: isPriceNull(listing.price),
-            description: isNull(listing.description),
-            image: isNull(missingImagesFiltered(listing.image)),
-            url: isNull(listing.url),
-            site: 'depop',
-          }
-        })
-
-        this.setState({
-          depopData: {
-            data: depopDataParsed,
-            status: 'resolved',
-          },
-        })
-
-        this.setState((prevState) => ({
-          loading: false,
-          Data: [...prevState.Data, ...depopDataParsed],
-        }))
-        this.reOrderDisplay(this.state.resultsDisplay)
-      } else if (this.state.depopData.status === 'resolved') {
-        const depopDataFiltered = this.state.depopData.data.filter(
-          (listing) => {
-            if (
-              isNull(listing.title)
-                .toLowerCase()
-                .includes(this.state.searchTerm) &&
-              listing.price >= this.state.filters.range.min &&
-              listing.price <= this.state.filters.range.max
-            ) {
-              return true
-            } else if (
-              isNull(listing.description)
-                .toLowerCase()
-                .includes(this.state.searchTerm) &&
-              listing.price >= this.state.filters.range.min &&
-              listing.price <= this.state.filters.range.max
-            ) {
-              return true
-            } else {
-              return false
-            }
-          }
-        )
-        this.setState((prevState) => ({
-          Data: [...prevState.Data, ...depopDataFiltered],
-        }))
-        this.reOrderDisplay(this.state.resultsDisplay)
-      }
-    }
-
-    const setGumtreeData = async () => {
-      const filterGumtreeData = async () => {
-        if (this.state.gumtreeData.data) {
-          console.log('gumtree data is not empty')
-        }
-        const filteredData = this.state.gumtreeData.data.filter((listing) => {
-          if (
-            listing.title.toLowerCase().includes(this.state.searchTerm) &&
-            listing.price >= this.state.filters.range.min &&
-            listing.price <= this.state.filters.range.max
-          ) {
-            return true
-          } else if (
-            listing.description.toLowerCase().includes(this.state.searchTerm) &&
-            listing.price >= this.state.filters.range.min &&
-            listing.price <= this.state.filters.range.max
-          ) {
-            return true
-          } else {
-            return false
-          }
-        })
-
-        await this.setState((prevState) => ({
-          mainDisplay: 'Results',
-          Data: [...prevState.Data, ...filteredData],
-        }))
-      }
-
-      const getGumtreeData = async () => {
-        const gumtree_url =
-          'https://api.apify.com/v2/datasets/aAVHXcypcKkmWEbZF/items?H4FHJb2qhqB6Td93i~gumtree-uk'
-        const gumtreeResponse = await fetch(gumtree_url)
-        const gumtreeData = await gumtreeResponse.json()
-
-        const gumtreeDataParsed = await gumtreeData.map((listing) => {
-          return {
-            title: listing.title,
-            price: listing.price.substring(1),
-            description: listing.description,
-            image: missingImagesFiltered(listing.image),
-            url: listing.url,
-            site: 'gumtree',
-          }
-        })
-
-        this.setState({
-          gumtreeData: {
-            data: gumtreeDataParsed,
-            status: 'resolved',
-          },
-        })
-      }
-
-      if (this.state.gumtreeData.status === 'unresolved') {
-        await getGumtreeData()
-        await filterGumtreeData()
+        await this.getDepopData()
+        await this.filterApifyData(this.state.depopData.data)
       } else {
-        await filterGumtreeData()
+        await this.filterApifyData(this.state.depopData.data)
       }
-
       await this.reOrderDisplay(this.state.resultsDisplay)
     }
 
-    const setFacebookData = async () => {}
+    const setGumtreeData = async () => {
+      ///timeline
+      if (this.state.gumtreeData.status === 'unresolved') {
+        await this.getGumtreeData()
+        await this.filterApifyData(this.state.gumtreeData.data)
+      } else {
+        await this.filterApifyData(this.state.gumtreeData.data)
+      }
+      await this.reOrderDisplay(this.state.resultsDisplay)
+    }
+
+    const setFacebookData = async () => {
+      ///timeline
+      if (this.state.facebookData.status === 'unresolved') {
+        await this.getFacebookData()
+        await this.filterApifyData(this.state.facebookData.data)
+      } else {
+        await this.filterApifyData(this.state.facebookData.data)
+      }
+      await this.reOrderDisplay(this.state.resultsDisplay)
+    }
 
     const setEtsyData = async () => {
       const etsyRaw = await fetch(
@@ -841,22 +754,22 @@ class App extends React.Component {
     })
     ///>Preliminary checks
 
-    ///<The Timeline
+    //<The Timeline
     if (this.state.filters.sites.ebay) {
       setEbayData()
     }
 
-    // if (this.state.filters.sites.depop) {
-    //   setDepopData()
-    // }
+    if (this.state.filters.sites.depop) {
+      setDepopData()
+    }
 
     if (this.state.filters.sites.gumtree) {
       setGumtreeData()
     }
 
-    // if (this.state.filters.sites.facebook) {
-    //   setFacebookData()
-    // }
+    if (this.state.filters.sites.facebook) {
+      setFacebookData()
+    }
 
     if (this.state.filters.sites.etsy) {
       setEtsyData()
