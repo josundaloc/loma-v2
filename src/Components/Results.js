@@ -3,6 +3,23 @@ import { Listing } from './Listing'
 import grid from '../assets/grid.svg'
 import filter from '../assets/filter.svg'
 import sort from '../assets/sort.svg'
+
+const thatsAll = (
+  <div
+    id="thatsAll"
+    className="h-64 w-full flex flex-col justify-center items-center m-40"
+  >
+    <div
+      className="
+            bg-blue-50 m-3 h-52 w-52 rounded-full flex flex-col justify-center content-center"
+    >
+      <h3 className="text-7xl mb-1 text-center">🤐</h3>
+      <p className="p-3 text-center italic text-sm text-blue-700">
+        That's it -- for now.
+      </p>
+    </div>
+  </div>
+)
 export class Results extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor(props) {
@@ -65,17 +82,8 @@ export class Results extends React.Component {
               />
             )
           })}
-          <div className="h-64 w-full flex flex-col justify-center items-center m-40">
-            <div
-              className="
-                        bg-blue-50 m-3 h-52 w-52 rounded-full flex flex-col justify-center content-center"
-            >
-              <h3 className="text-7xl mb-1 text-center">🤐</h3>
-              <p className="p-3 text-center italic text-sm text-blue-700">
-                That's it -- for now.
-              </p>
-            </div>
-          </div>
+
+          {thatsAll}
         </div>
       </div>
     )

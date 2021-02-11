@@ -9,6 +9,9 @@ import preloved from '../assets/Preloved.png'
 import twitter from '../assets/twitter.png'
 import instagram from '../assets/instagram.png'
 import facebookicon from '../assets/facebookicon.png'
+import k20logo from '../assets/k20-logo.png'
+import mayorlogo from '../assets/mayorlogo.png'
+import lcflogo from '../assets/lcf.svg'
 
 import sketch from '../assets/LOMAsketch.JPG'
 import search from '../assets/search.JPG'
@@ -27,14 +30,14 @@ export class Landing extends React.Component {
           <div className="flex flex-col items-center justify-center sm:w-2/3 p-4 mx-auto opacity-100">
             <h2
               className="
-            font-black text-base sm:text-xl text-center leading-tight
+            font-black text-base sm:text-xl md:text-2xl text-center leading-tight
             "
             >
               Buy secondhand, rent and repair
             </h2>
             <h2
               className="
-            font-black text-base sm:text-xl leading-tight text-center -mt-1
+            font-black text-base sm:text-xl md:text-2xl leading-tight text-center -mt-1
             "
             >
               {' '}
@@ -43,7 +46,7 @@ export class Landing extends React.Component {
 
             <p
               className="
-                text-xs sm:text-sm text-center mt-2 leading-none
+                text-xs sm:text-sm md:text-base text-center mt-2 leading-none
                 "
             >
               Find things that you love from all the top sites. Get them
@@ -52,7 +55,7 @@ export class Landing extends React.Component {
 
             <p
               className="
-                text-xs sm:text-sm text-center mt-2.5
+                text-xs sm:text-sm md:text-base text-center mt-2.5
                 "
             >
               <span
@@ -225,12 +228,30 @@ export class Landing extends React.Component {
           </div>
         </div>
         <div
+          className="BackedBy
+        w-full bg-gray-50 p-5"
+        >
+          <h1 className="text-lg font-black text-gray-700 text-center">
+            Backed by:
+          </h1>
+          <div className="w-full flex flex-row flex-wrap justify-center content-center items-center">
+            <img className="h-36 opacity-70 p-4" src={k20logo} />
+            <img className="h-36 opacity-70 p-4" src={lcflogo} />
+            <div className="w-60 h-36 p-4 flex flex-col justify-center items-center content-center">
+              <img className="w-full opacity-80" src={mayorlogo} />
+              <p className="text-center text-sm leading-none text-gray-400 mt-2">
+                Environment Award finalist 2020
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
           className="FOOTER
         h-32 flex justify-between sm:justify-center items-center
-        bg-gray-50
+        bg-white
         "
         >
-          <p className=" text-xs text-gray-300 pl-5 pr-6">
+          <p className=" text-xs text-gray-400 pl-5 pr-6">
             © 2020 LoopMarket Ltd.
           </p>
           <div className="flex flex-wrap justify-end items-center">

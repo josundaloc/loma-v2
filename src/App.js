@@ -141,7 +141,7 @@ class App extends React.Component {
     this.getDepopData()
     this.getGumtreeData()
     this.getFacebookData()
-    // hotjar.initialize(2123002, 6)
+    hotjar.initialize(2123002, 6)
   } //COMPONENT MOUNT ENDS
 
   async filterApifyData(stateData) {
@@ -782,7 +782,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="max-w-screen-lg h-screen flex flex-row justify-center content-center mx-auto">
+      <div className="w-screen h-screen">
         {/* Top layer for popups */}
         {this.state.popUpListing.display ? (
           <PopUpListing
@@ -805,48 +805,50 @@ class App extends React.Component {
         ) : null}
         {this.state.popUpGeneral === 'PopUpLogSign' ? <PopUpLogSign /> : null}
         {/* Top layer for popups ends */}
-        <div className="w-full flex flex-row">
-          <div className="se:hidden sm:block">
-            <Sidebar toggleMainDisplay={this.toggleMainDisplay} />
-          </div>
-          <div className="w-full h-full bg-white overflow-x-hidden z-0 border-r">
-            {this.state.mainDisplay !== 'UserLikes' &&
-            this.state.mainDisplay !== 'Repairs' &&
-            this.state.mainDisplay !== 'UserAccount' &&
-            this.state.mainDisplay !== 'Community' ? (
-              <SearchBar
-                onChange={this.handleChange}
-                toggleMainDisplay={this.toggleMainDisplay}
-                resultsDisplay={this.state.resultsDisplay}
-                searchTerm={this.state.searchTerm}
-              />
-            ) : null}
-            {this.state.mainDisplay === 'Landing' ? <Landing /> : null}
-            {this.state.mainDisplay === 'Repairs' ? (
-              <Repairs toggleMainDisplay={this.toggleMainDisplay} />
-            ) : null}
-            {this.state.mainDisplay === 'Community' ? (
-              <Community toggleMainDisplay={this.toggleMainDisplay} />
-            ) : null}
-            {this.state.mainDisplay === 'UserLikes' ? (
-              <UserLikes toggleMainDisplay={this.toggleMainDisplay} />
-            ) : null}
-            {this.state.mainDisplay === 'UserAccount' ? (
-              <UserAccount toggleMainDisplay={this.toggleMainDisplay} />
-            ) : null}
-            {this.state.mainDisplay === 'Loading' ? <LoadingPop /> : null}
-            {this.state.mainDisplay === 'Results' ? (
-              <Results
-                Data={this.state.Data}
-                resultsDisplay={this.state.resultsDisplay}
-                reOrderDisplay={this.reOrderDisplay}
-                searchTerm={this.state.searchTerm}
-                search={this.handleChange}
-                togglePopUp={this.togglePopUp}
-                toggleSearchSettings={this.toggleSearchSettings}
-                gridView={this.state.gridView}
-              />
-            ) : null}
+        <div className="max-w-screen-lg h-screen flex flex-row justify-center content-center mx-auto">
+          <div className="w-full flex flex-row">
+            <div className="se:hidden sm:block">
+              <Sidebar toggleMainDisplay={this.toggleMainDisplay} />
+            </div>
+            <div className="w-full h-full bg-white overflow-x-hidden z-0 border-r">
+              {this.state.mainDisplay !== 'UserLikes' &&
+              this.state.mainDisplay !== 'Repairs' &&
+              this.state.mainDisplay !== 'UserAccount' &&
+              this.state.mainDisplay !== 'Community' ? (
+                <SearchBar
+                  onChange={this.handleChange}
+                  toggleMainDisplay={this.toggleMainDisplay}
+                  resultsDisplay={this.state.resultsDisplay}
+                  searchTerm={this.state.searchTerm}
+                />
+              ) : null}
+              {this.state.mainDisplay === 'Landing' ? <Landing /> : null}
+              {this.state.mainDisplay === 'Repairs' ? (
+                <Repairs toggleMainDisplay={this.toggleMainDisplay} />
+              ) : null}
+              {this.state.mainDisplay === 'Community' ? (
+                <Community toggleMainDisplay={this.toggleMainDisplay} />
+              ) : null}
+              {this.state.mainDisplay === 'UserLikes' ? (
+                <UserLikes toggleMainDisplay={this.toggleMainDisplay} />
+              ) : null}
+              {this.state.mainDisplay === 'UserAccount' ? (
+                <UserAccount toggleMainDisplay={this.toggleMainDisplay} />
+              ) : null}
+              {this.state.mainDisplay === 'Loading' ? <LoadingPop /> : null}
+              {this.state.mainDisplay === 'Results' ? (
+                <Results
+                  Data={this.state.Data}
+                  resultsDisplay={this.state.resultsDisplay}
+                  reOrderDisplay={this.reOrderDisplay}
+                  searchTerm={this.state.searchTerm}
+                  search={this.handleChange}
+                  togglePopUp={this.togglePopUp}
+                  toggleSearchSettings={this.toggleSearchSettings}
+                  gridView={this.state.gridView}
+                />
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
