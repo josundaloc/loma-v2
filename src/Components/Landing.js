@@ -235,9 +235,15 @@ export class Landing extends React.Component {
             Backed by:
           </h1>
           <div className="w-full flex flex-row flex-wrap justify-center content-center items-center">
-            <img className="h-36 opacity-70 p-4" src={k20logo} />
+            <img
+              onClick={() => {
+                window.open('https://www.kings20.com/ventures/loma/')
+              }}
+              className="h-36 opacity-70 p-4 hover"
+              src={k20logo}
+            />
             <img className="h-36 opacity-70 p-4" src={lcflogo} />
-            <div className="w-60 h-36 p-4 flex flex-col justify-center items-center content-center">
+            <div className="w-60 h-36 flex flex-col justify-center items-center content-center">
               <img className="w-full opacity-80" src={mayorlogo} />
               <p className="text-center text-sm leading-none text-gray-400 mt-2">
                 Environment Award finalist 2020

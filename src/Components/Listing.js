@@ -100,7 +100,8 @@ export class Listing extends React.Component {
                            p-0 m-0 break-words
                            "
               >
-                {truncate55(this.props.listing.title)}
+                {/* {truncate55(this.props.listing.title)} */}
+                {this.props.listing.title}
               </p>
             ) : null}
 

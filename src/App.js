@@ -24,6 +24,26 @@ import { hotjar } from 'react-hotjar'
 /////////FUNCTIONS AND CONSTANTS
 const appLoaded = Date.now()
 
+function alternate(array1, array2) {
+  console.log('alternate start. array2 length: ' + array2.length)
+  if (array2.length > 0) {
+    var result = [],
+      i,
+      l = Math.min(array1.length, array2.length)
+
+    for (i = 0; i < l; i++) {
+      result.push(array1[i], array2[i])
+    }
+    result.push(...array1.slice(l), ...array2.slice(l))
+
+    console.log('alternate result length: ' + result.length)
+    return result
+  } else {
+    console.log('alternate rejected')
+    return array1
+  }
+}
+
 ///////<DATA CLEANERS>
 const isNull = (property) => {
   if (property === null || property === undefined) {
@@ -126,6 +146,7 @@ class App extends React.Component {
     this.getDepopData = this.getDepopData.bind(this)
     this.getGumtreeData = this.getGumtreeData.bind(this)
     this.getFacebookData = this.getFacebookData.bind(this)
+    this.filterApifyData = this.filterApifyData.bind(this)
   }
 
   componentDidMount() {
@@ -144,7 +165,7 @@ class App extends React.Component {
     hotjar.initialize(2123002, 6)
   } //COMPONENT MOUNT ENDS
 
-  async filterApifyData(stateData) {
+  filterApifyData(stateData) {
     if (stateData.length > 0) {
       const filteredData = stateData.filter((listing) => {
         if (
@@ -163,11 +184,8 @@ class App extends React.Component {
           return false
         }
       })
-
-      await this.setState((prevState) => ({
-        mainDisplay: 'Results',
-        Data: [...prevState.Data, ...filteredData],
-      }))
+      console.log('filtered length' + filteredData.length)
+      return filteredData
     }
   }
 
@@ -480,7 +498,7 @@ class App extends React.Component {
 
     if (this.state.Data) {
       if (this.state.resultsDisplay === '⚡️ Trending ⚡️') {
-        this.setState({ Data: shuffleArray(this.state.Data) })
+        // this.setState({ Data: shuffleArray(this.state.Data) })
       } else if (this.state.resultsDisplay === 'Highest price first ▲') {
         this.setState({ Data: this.state.Data.sort(highest) })
       } else if (this.state.resultsDisplay === 'Lowest price first ▼') {
@@ -645,10 +663,10 @@ class App extends React.Component {
           return []
         }
       }
-
-      this.setState((prevState) => ({
+      let newData = ebayDataParsed()
+      await this.setState((prevState) => ({
         mainDisplay: 'Results',
-        Data: [...prevState.Data, ...ebayDataParsed()],
+        Data: alternate(prevState.Data, newData),
       }))
       this.reOrderDisplay(this.state.resultsDisplay)
     }
@@ -657,10 +675,15 @@ class App extends React.Component {
       //timeline
       if (this.state.depopData.status === 'unresolved') {
         await this.getDepopData()
-        await this.filterApifyData(this.state.depopData.data)
       } else {
-        await this.filterApifyData(this.state.depopData.data)
       }
+      await this.setState((prevState) => ({
+        mainDisplay: 'Results',
+        Data: alternate(
+          prevState.Data,
+          this.filterApifyData(this.state.depopData.data)
+        ),
+      }))
       await this.reOrderDisplay(this.state.resultsDisplay)
     }
 
@@ -668,10 +691,15 @@ class App extends React.Component {
       ///timeline
       if (this.state.gumtreeData.status === 'unresolved') {
         await this.getGumtreeData()
-        await this.filterApifyData(this.state.gumtreeData.data)
       } else {
-        await this.filterApifyData(this.state.gumtreeData.data)
       }
+      await this.setState((prevState) => ({
+        mainDisplay: 'Results',
+        Data: alternate(
+          prevState.Data,
+          this.filterApifyData(this.state.gumtreeData.data)
+        ),
+      }))
       await this.reOrderDisplay(this.state.resultsDisplay)
     }
 
@@ -679,10 +707,15 @@ class App extends React.Component {
       ///timeline
       if (this.state.facebookData.status === 'unresolved') {
         await this.getFacebookData()
-        await this.filterApifyData(this.state.facebookData.data)
       } else {
-        await this.filterApifyData(this.state.facebookData.data)
       }
+      await this.setState((prevState) => ({
+        mainDisplay: 'Results',
+        Data: alternate(
+          prevState.Data,
+          this.filterApifyData(this.state.facebookData.data)
+        ),
+      }))
       await this.reOrderDisplay(this.state.resultsDisplay)
     }
 
@@ -705,12 +738,11 @@ class App extends React.Component {
           site: 'etsy',
         }
       })
-
-      this.setState((prevState) => ({
+      await this.setState((prevState) => ({
         mainDisplay: 'Results',
-        Data: [...prevState.Data, ...etsyData],
+        Data: alternate(prevState.Data, etsyData),
       }))
-      this.reOrderDisplay(this.state.resultsDisplay)
+      await this.reOrderDisplay(this.state.resultsDisplay)
     }
 
     const setTrashNothingData = async () => {
@@ -730,9 +762,9 @@ class App extends React.Component {
         }
       })
 
-      this.setState((prevState) => ({
+      await this.setState((prevState) => ({
         mainDisplay: 'Results',
-        Data: [...prevState.Data, ...trashNothingData],
+        Data: alternate(prevState.Data, trashNothingData),
       }))
       this.reOrderDisplay(this.state.resultsDisplay)
     }
