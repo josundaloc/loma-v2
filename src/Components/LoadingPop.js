@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import loading from '../assets/loading.gif'
 import { SkeletonListing } from './SkeletonListing'
 
@@ -16,7 +16,7 @@ import { SkeletonListing } from './SkeletonListing'
 //     letter = currentText.slice(0, ++index);
 
 //     document.getElementById("input").placeholder = letter;
-    
+
 //     if (letter.length === currentText.length) {
 //         count++;
 //         index = 0
@@ -25,27 +25,23 @@ import { SkeletonListing } from './SkeletonListing'
 
 // function changeText() {
 //     document.getElementById("text").innerHTML = "waiting on eBay";
-    
+
 // };
 
-
 export class LoadingPop extends React.Component {
-    render() {
-        return (
-            <div className="max-w-screen-md flex flex-wrap justify-center content-center p-1 mx-auto">
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                <SkeletonListing />
-                
-            </div>
-            
-            
-        )
-    }
+  render() {
+    return (
+      <div className="w-full flex flex-wrap justify-center content-center p-1 mx-auto">
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+        <SkeletonListing />
+      </div>
+    )
+  }
 }

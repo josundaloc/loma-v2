@@ -3,6 +3,7 @@ import { Listing } from './Listing'
 import grid from '../assets/grid.svg'
 import filter from '../assets/filter.svg'
 import sort from '../assets/sort.svg'
+import { LoadingPop } from './LoadingPop'
 
 const thatsAll = (
   <div
@@ -24,7 +25,21 @@ export class Results extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props)
+    this.state = {
+      Loading: true,
+      thatsAll: false,
+    }
     this.toggleResults = this.toggleResults.bind(this)
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ Loading: false })
+    }, 500)
+
+    setTimeout(() => {
+      this.setState({ thatsAll: true })
+    }, 2000)
   }
 
   toggleResults() {
@@ -68,23 +83,26 @@ export class Results extends React.Component {
             <img className="h-3 mr-1 my-auto" src={filter}></img>Filter
           </div>
         </div>
+        {this.state.Loading === true ? <LoadingPop /> : null}
 
-        <div
-          className="results p-1 max-w-screen-md
+        {this.state.Loading === false ? (
+          <div
+            className="results p-1 max-w-screen-md
                     w-full flex flex-wrap justify-center"
-        >
-          {this.props.Data.map((listing) => {
-            return (
-              <Listing
-                togglePopUp={this.props.togglePopUp}
-                gridView={this.props.gridView}
-                listing={listing}
-              />
-            )
-          })}
+          >
+            {this.props.Data.map((listing) => {
+              return (
+                <Listing
+                  togglePopUp={this.props.togglePopUp}
+                  gridView={this.props.gridView}
+                  listing={listing}
+                />
+              )
+            })}
 
-          {thatsAll}
-        </div>
+            {this.state.thatsAll === true ? thatsAll : null}
+          </div>
+        ) : null}
       </div>
     )
   }
