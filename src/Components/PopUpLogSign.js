@@ -9,7 +9,6 @@ import gumtree from '../assets/gumtree.png'
 import facebook from '../assets/facebook.png'
 import etsy from '../assets/Etsy.png'
 import trashnothing from '../assets/Freecycle.png'
-import { authByEmailLink } from '../feature/login'
 
 //import './Listing.css';
 
@@ -37,9 +36,7 @@ export class PopUpLogSign extends React.Component {
   /**
    * Triggered when user presses on sign up - this.state.username needs to be validated
    */
-  onSignUp = () => {
-    authByEmailLink(this.state.username)
-  }
+  onSignUp = () => {}
 
   render() {
     if (this.state.mode === 'Sign Up') {

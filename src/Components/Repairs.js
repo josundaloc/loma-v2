@@ -13,12 +13,9 @@ export class Repairs extends React.Component {
 
   render() {
     return (
-      <div className="max-w-screen-md flex flex-col justify-center content-center mx-auto px-3 lg:pt-6">
-        <div>
-          <TopNav toggleMainDisplay={this.props.toggleMainDisplay} />
-        </div>
+      <div className="max-w-screen-md flex flex-col justify-center content-center mx-auto lg:pt-6">
         <h1
-          className="font-bold text-2xl px-3 mt-3
+          className="font-black text-2xl px-3 mt-3
             "
         >
           Fix

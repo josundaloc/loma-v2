@@ -15,8 +15,25 @@ const thatsAll = (
             bg-blue-50 m-3 h-52 w-52 rounded-full flex flex-col justify-center content-center"
     >
       <h3 className="text-7xl mb-1 text-center">🤐</h3>
-      <p className="p-3 text-center italic text-sm text-blue-700">
-        That's it -- for now.
+      <p className="p-4 text-center italic text-sm text-blue-700">
+        That's it – for now.
+      </p>
+    </div>
+  </div>
+)
+
+const makeYourFirstSearch = (
+  <div
+    id="makeYourFirstSearch"
+    className="h-64 w-full flex flex-col justify-center items-center m-40"
+  >
+    <div
+      className="
+          bg-yellow-50 m-3 h-52 w-52 rounded-full flex flex-col justify-center content-center"
+    >
+      <h3 className="text-7xl mb-1 text-center">🔍</h3>
+      <p className="p-3 text-center italic text-sm text-yellow-700">
+        Make your first search and it'll appear here!
       </p>
     </div>
   </div>
@@ -35,7 +52,7 @@ export class Results extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ Loading: false })
-    }, 500)
+    }, 700)
 
     setTimeout(() => {
       this.setState({ thatsAll: true })
@@ -83,7 +100,6 @@ export class Results extends React.Component {
             <img className="h-3 mr-1 my-auto" src={filter}></img>Filter
           </div>
         </div>
-        {this.state.Loading === true ? <LoadingPop /> : null}
 
         {this.state.Loading === false ? (
           <div
@@ -96,11 +112,15 @@ export class Results extends React.Component {
                   togglePopUp={this.props.togglePopUp}
                   gridView={this.props.gridView}
                   listing={listing}
+                  addFavourite={this.props.addFavourite}
                 />
               )
             })}
-
-            {this.state.thatsAll === true ? thatsAll : null}
+            {this.state.Loading && this.props.hasSearched ? (
+              <LoadingPop />
+            ) : null}
+            {this.state.thatsAll && this.props.hasSearched ? thatsAll : null}
+            {!this.props.hasSearched ? makeYourFirstSearch : null}
           </div>
         ) : null}
       </div>

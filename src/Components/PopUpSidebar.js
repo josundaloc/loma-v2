@@ -82,27 +82,35 @@ export class PopUpSidebar extends React.Component {
               </h3>
             </div>
 
-            {/* <div 
-                    onClick={async () => {
-                        await this.props.toggleSideBar
-                        await this.toggleMainDisplay("UserLikes")}}
-                    className="
+            <div
+              onClick={async () => {
+                await this.props.toggleSideBar
+                await this.toggleMainDisplay('UserLikes')
+              }}
+              className="
                     flex flex-row h-10 ml-3
-                    cursor-pointer">
-                            <img src={collections} className="w-4 "/>
-                            <h3 className="ml-6 text-lg align-middle my-auto font-semibold leading-none">Collections</h3>
-                    </div>
+                    cursor-pointer"
+            >
+              <img src={collections} className="w-4 " />
+              <h3 className="ml-6 text-lg align-middle my-auto font-semibold leading-none">
+                Saved items
+              </h3>
+            </div>
 
-                    <div 
-                    onClick={async () => {
-                        await this.props.toggleSideBar
-                        await this.toggleMainDisplay("UserAccount")}}
-                    className="
+            <div
+              onClick={async () => {
+                await this.props.toggleSideBar
+                await this.toggleMainDisplay('UserAccount')
+              }}
+              className="
                     flex flex-row h-10 ml-3
-                    cursor-pointer">
-                            <img src={user} className="w-4 "/>
-                            <h3 className="ml-6 text-lg align-middle my-auto font-semibold leading-none">Account</h3>
-                    </div> */}
+                    cursor-pointer"
+            >
+              <img src={user} className="w-4 " />
+              <h3 className="ml-6 text-lg align-middle my-auto font-semibold leading-none">
+                Account
+              </h3>
+            </div>
           </div>
         </div>
       </div>

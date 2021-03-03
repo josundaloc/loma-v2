@@ -45,7 +45,14 @@ export class TopNav extends React.Component {
                         "
               />
             </a>
-            <img className="h-7 pr-3 opacity-0" src={user} />
+            <img
+              onClick={() => {
+                const userAccount = { mainDisplay: 'UserAccount' }
+                this.props.changeState(userAccount)
+              }}
+              className="h-7 pr-3"
+              src={user}
+            />
           </div>
         </div>
       </div>

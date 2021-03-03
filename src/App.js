@@ -1,6 +1,12 @@
 import React from 'react'
 import 'tailwindcss/tailwind.css'
 
+import app from '../src/Firebase'
+import firebase from 'firebase/app'
+
+import { getFavourites } from './feature/favourites/index'
+
+import { Alert } from './Components/Alert'
 import { SearchBar } from './Components/SearchBar'
 import { Results } from './Components/Results'
 import { Landing } from './Components/Landing'
@@ -13,13 +19,66 @@ import { UserLikes } from './Components/UserLikes'
 import { Repairs } from './Components/Repairs'
 import { UserAccount } from './Components/UserAccount'
 import { Community } from './Components/Community'
-import { checkIfSignInByLink, isUserSignedIn } from './feature/login'
+import { TopNav } from './Components/TopNav'
 
 import imagePlaceholder from './assets/gallery.png'
 
 import { hotjar } from 'react-hotjar'
 
 //////<ALL FUNCTIONS
+
+/////////FIREBASE STUFF
+let userObject = {
+  signedIn: false,
+  uid: '',
+  username: '',
+  bio: '',
+  email: '',
+  joinedOn: '',
+}
+//firebase stuff
+
+const db = firebase.firestore()
+const screamsRef = db.collection('screams')
+
+const auth = app.auth()
+const googleProvider = new firebase.auth.GoogleAuthProvider()
+
+let userId = () => {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      var uid = user.uid
+      return uid
+    } else {
+      return 'none'
+    }
+  })
+}
+
+//functions
+
+function doesUserObjectExist(userId) {
+  db.collection('userObject')
+    .doc(userId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        return true
+      } else {
+        return false
+      }
+    })
+}
+
+function isEmailValid(email) {
+  const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  if (email.match(regEx)) return true
+  else return false
+}
+const isPasswordValid = (string) => {
+  if (string.length >= 6) return true
+  else return false
+}
 
 /////////FUNCTIONS AND CONSTANTS
 const appLoaded = Date.now()
@@ -89,7 +148,12 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      alertVisible: false,
+      alertMessage: '',
+      user: userObject,
+      favourites: [],
       Data: [],
+      hasSearched: false,
       AccessToken: 'none',
       ExpiryDate: 0,
       resultsDisplay: '⚡️ Trending ⚡️',
@@ -147,23 +211,285 @@ class App extends React.Component {
     this.getGumtreeData = this.getGumtreeData.bind(this)
     this.getFacebookData = this.getFacebookData.bind(this)
     this.filterApifyData = this.filterApifyData.bind(this)
+    this.signUpWithEmailPassword = this.signUpWithEmailPassword.bind(this)
+    this.signInGoogle = this.signInGoogle.bind(this)
+    this.signOut = this.signOut.bind(this)
+    this.addFavourite = this.addFavourite.bind(this)
+    this.updateUser = this.updateUser.bind(this)
+    this.removeFavourite = this.removeFavourite.bind(this)
+    this.changeState = this.changeState.bind(this)
   }
 
   componentDidMount() {
-    checkIfSignInByLink().then(({ ok }) => {
-      if (ok) {
-        this.setState({ popUpGeneral: null })
+    // this.getEbayAccessToken()
+    // this.getDepopData()
+    // this.getGumtreeData()
+    // this.getFacebookData()
+    hotjar.initialize(2123002, 6)
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log('bitch is in')
+        db.doc(`/userObject/${user.email}`)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              console.log('user exists, setting state')
+              this.setState({
+                user: {
+                  signedIn: true,
+                  uid: doc.data().uid,
+                  username: doc.data().username,
+                  bio: doc.data().bio,
+                  email: doc.data().email,
+                  joinedOn: doc.data().joinedOn,
+                },
+              })
+            }
+          })
+        db.collection('favourites')
+          .where('uid', '==', user.uid)
+          .orderBy('createdAt', 'desc')
+          .onSnapshot((querySnapshot) => {
+            let favouritesList = []
+            querySnapshot.forEach((fave) => {
+              favouritesList.push({
+                title: fave.data().title,
+                description: fave.data().description,
+                createdAt: fave.data().createdAt,
+                image: fave.data().image,
+                price: fave.data().price,
+                site: fave.data().site,
+                uid: fave.data().uid,
+                docId: fave.id,
+                url: fave.data().url,
+              })
+            })
+            this.setState({
+              favourites: favouritesList,
+            })
+          })
+      } else {
+        console.log('user signed out')
       }
     })
-
-    ///////
-    this.getEbayAccessToken()
-    // console.log('access token' + this.state.AccessToken)
-    this.getDepopData()
-    this.getGumtreeData()
-    this.getFacebookData()
-    hotjar.initialize(2123002, 6)
   } //COMPONENT MOUNT ENDS
+
+  changeState(newState) {
+    this.setState(newState)
+  }
+
+  updateUser(newUsername, newBio) {
+    if (newUsername) {
+      ///TODO: validate username if it already exists
+      db.collection('userObject')
+        .doc(this.state.user.email)
+        .update({
+          username: newUsername,
+          bio: newBio,
+        })
+        .then(() => {
+          this.setState((prevState) => ({
+            user: {
+              signedIn: prevState.user.signedIn,
+              uid: prevState.user.uid,
+              username: newUsername,
+              bio: newBio,
+              email: prevState.user.email,
+              joinedOn: prevState.user.joinedOn,
+            },
+          }))
+          this.setState({
+            alertVisible: true,
+            alertMessage: '👤 Profile successfully updated ',
+          })
+          setTimeout(() => {
+            this.setState({ alertVisible: false })
+          }, 2000)
+        })
+        .catch((error) => {
+          alert(error)
+        })
+    } else {
+      alert('Username cannot be left empty')
+    }
+  }
+
+  removeFavourite(listing) {
+    db.collection('favourites')
+      .doc(listing.docId)
+      .delete()
+      .then(() => {
+        console.log('listing successfully removed')
+        this.setState({
+          alertVisible: true,
+          alertMessage: '❌ Listing Removed ',
+        })
+        setTimeout(() => {
+          this.setState({ alertVisible: false })
+        }, 2000)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  addFavourite(listing) {
+    if (!this.state.user.signedIn) {
+      return alert('Sign in to start saving listings!')
+    } else {
+      db.collection('favourites')
+        .add({
+          title: listing.title,
+          description: listing.description,
+          createdAt: new Date().toISOString(),
+          image: listing.image,
+          price: listing.price,
+          site: listing.site,
+          uid: this.state.user.uid,
+          url: listing.url,
+        })
+        .then(() => {
+          console.log('listing successfully favourited')
+          this.setState({
+            alertVisible: true,
+            alertMessage: '❤️ Listing saved ',
+          })
+          setTimeout(() => {
+            this.setState({ alertVisible: false })
+          }, 2000)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }
+
+  signOut() {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        this.setState({
+          favourites: [],
+          user: {
+            signedIn: false,
+            uid: '',
+            username: '',
+            bio: '',
+            email: '',
+            joinedOn: '',
+          },
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  signInGoogle() {
+    console.log('signing in with google')
+    firebase
+      .auth()
+      .signInWithPopup(googleProvider)
+      .then((userCredentials) => {
+        ///does userObject exist?
+        db.doc(`/userObject/${userCredentials.user.email}`)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              console.log('user already exists, just signing in')
+              console.log('listing successfully favourited')
+              this.setState({
+                alertVisible: true,
+                alertMessage: '👋  Welcome back!',
+              })
+              setTimeout(() => {
+                this.setState({ alertVisible: false })
+              }, 2000)
+              //do nothing
+            } else {
+              //create userObject
+              db.doc(`userObject/${userCredentials.user.email}`).set({
+                uid: userCredentials.user.uid,
+                username: '',
+                bio: '',
+                email: userCredentials.user.email,
+                joinedOn: new Date().toISOString(),
+              })
+            }
+          })
+          .catch((err) => {
+            alert(err)
+          })
+      })
+      // .then() needs a set state to update and refresh
+      .catch((error) => {})
+  }
+
+  signUpWithEmailPassword(rawEmail, rawPassword) {
+    //TODO: validate if email and password
+    let userEmail
+
+    if (!isEmailValid(rawEmail)) {
+      return alert('Email must be valid')
+    }
+
+    if (!isPasswordValid(rawPassword)) {
+      return alert('Password must be more than 6 characters')
+    }
+
+    //2: does user Object exist?
+    db.doc(`/userObject/${rawEmail}`)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(rawEmail, rawPassword)
+            .then((userCredential) => {
+              console.log('sign in successful')
+              this.setState({
+                alertVisible: true,
+                alertMessage: '👋 Sign in successful ',
+              })
+              setTimeout(() => {
+                this.setState({ alertVisible: false })
+              }, 2000)
+            })
+            .catch((error) => {
+              alert(error)
+            })
+        } else {
+          return firebase
+            .auth()
+            .createUserWithEmailAndPassword(rawEmail, rawPassword)
+        }
+      })
+      .then((userCredentials) => {
+        if (userCredentials) {
+          console.log('sign in successful')
+          this.setState({
+            alertVisible: true,
+            alertMessage: '👋 Sign in successful ',
+          })
+          setTimeout(() => {
+            this.setState({ alertVisible: false })
+          }, 2000)
+          db.doc(`userObject/${userCredentials.user.email}`).set({
+            uid: userCredentials.user.uid,
+            username: '',
+            bio: '',
+            email: userCredentials.user.email,
+            joinedOn: new Date().toISOString(),
+          })
+          userId = userCredentials.user.uid
+          userEmail = userCredentials.user.email
+        }
+      })
+      .catch((err) => {
+        alert(err)
+      })
+  }
 
   filterApifyData(stateData) {
     if (stateData.length > 0) {
@@ -213,8 +539,6 @@ class App extends React.Component {
         status: 'resolved',
       },
     })
-
-    let facebookDataSetTime = Date.now() - appLoaded
 
     console.log(
       'facebook data has been set, this how many items there are' +
@@ -466,15 +790,15 @@ class App extends React.Component {
     /// functions
     await this.setState({ resultsDisplay: sortOrder })
 
-    function shuffleArray(array) {
-      for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1))
-        var temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
-      }
-      return array
-    }
+    // function shuffleArray(array) {
+    //   for (var i = array.length - 1; i > 0; i--) {
+    //     var j = Math.floor(Math.random() * (i + 1))
+    //     var temp = array[i]
+    //     array[i] = array[j]
+    //     array[j] = temp
+    //   }
+    //   return array
+    // }
 
     function highest(a, b) {
       if (Number(a.price) < Number(b.price)) {
@@ -510,15 +834,15 @@ class App extends React.Component {
   setData(searchQuery) {
     ///<Functions and constants
 
-    function shuffleArray(array) {
-      for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1))
-        var temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
-      }
-      return array
-    }
+    // function shuffleArray(array) {
+    //   for (var i = array.length - 1; i > 0; i--) {
+    //     var j = Math.floor(Math.random() * (i + 1))
+    //     var temp = array[i]
+    //     array[i] = array[j]
+    //     array[j] = temp
+    //   }
+    //   return array
+    // }
 
     const isNull = (property) => {
       if (property === null || property === undefined) {
@@ -781,6 +1105,7 @@ class App extends React.Component {
     console.time('complete search')
     this.setState({
       Data: [],
+      hasSearched: true,
       searchTerm: searchQuery.toLowerCase(),
       mainDisplay: 'Loading',
     })
@@ -816,6 +1141,10 @@ class App extends React.Component {
     return (
       <div className="w-screen h-screen">
         {/* Top layer for popups */}
+        <Alert
+          visible={this.state.alertVisible}
+          message={this.state.alertMessage}
+        />
         {this.state.popUpListing.display ? (
           <PopUpListing
             changeActiveListing={this.changeActiveListing}
@@ -840,9 +1169,18 @@ class App extends React.Component {
         <div className="max-w-screen-lg h-screen flex flex-row justify-center content-center mx-auto">
           <div className="w-full flex flex-row">
             <div className="se:hidden sm:block">
-              <Sidebar toggleMainDisplay={this.toggleMainDisplay} />
+              <Sidebar
+                toggleMainDisplay={this.toggleMainDisplay}
+                signedIn={this.state.user.signedIn}
+              />
             </div>
             <div className="w-full h-full bg-white overflow-x-hidden z-0 border-r">
+              <div className="sm:hidden">
+                <TopNav
+                  toggleMainDisplay={this.toggleMainDisplay}
+                  changeState={this.changeState}
+                />
+              </div>
               {this.state.mainDisplay !== 'UserLikes' &&
               this.state.mainDisplay !== 'Repairs' &&
               this.state.mainDisplay !== 'UserAccount' &&
@@ -854,23 +1192,48 @@ class App extends React.Component {
                   searchTerm={this.state.searchTerm}
                 />
               ) : null}
+
               {this.state.mainDisplay === 'Landing' ? <Landing /> : null}
               {this.state.mainDisplay === 'Repairs' ? (
-                <Repairs toggleMainDisplay={this.toggleMainDisplay} />
+                <Repairs
+                  toggleMainDisplay={this.toggleMainDisplay}
+                  signedIn={this.state.user.signedIn}
+                  changeState={this.changeState}
+                />
               ) : null}
               {this.state.mainDisplay === 'Community' ? (
-                <Community toggleMainDisplay={this.toggleMainDisplay} />
+                <Community
+                  toggleMainDisplay={this.toggleMainDisplay}
+                  signedIn={this.state.user.signedIn}
+                />
               ) : null}
               {this.state.mainDisplay === 'UserLikes' ? (
-                <UserLikes toggleMainDisplay={this.toggleMainDisplay} />
+                <UserLikes
+                  favourites={this.state.favourites}
+                  removeFavourite={this.removeFavourite}
+                  toggleMainDisplay={this.toggleMainDisplay}
+                  signedIn={this.state.user.signedIn}
+                  togglePopUp={this.togglePopUp}
+                />
               ) : null}
               {this.state.mainDisplay === 'UserAccount' ? (
-                <UserAccount toggleMainDisplay={this.toggleMainDisplay} />
+                <UserAccount
+                  toggleMainDisplay={this.toggleMainDisplay}
+                  signedIn={this.state.user.signedIn}
+                  signUpWithEmailPassword={this.signUpWithEmailPassword}
+                  signInGoogle={this.signInGoogle}
+                  signOut={this.signOut}
+                  userObject={this.state.user}
+                  favourites={this.state.favourites}
+                  updateUser={this.updateUser}
+                />
               ) : null}
               {this.state.mainDisplay === 'Loading' ? <LoadingPop /> : null}
               {this.state.mainDisplay === 'Results' ? (
                 <Results
                   Data={this.state.Data}
+                  hasSearched={this.state.hasSearched}
+                  signedIn={this.state.user.signedIn}
                   resultsDisplay={this.state.resultsDisplay}
                   reOrderDisplay={this.reOrderDisplay}
                   searchTerm={this.state.searchTerm}
@@ -878,6 +1241,7 @@ class App extends React.Component {
                   togglePopUp={this.togglePopUp}
                   toggleSearchSettings={this.toggleSearchSettings}
                   gridView={this.state.gridView}
+                  addFavourite={this.addFavourite}
                 />
               ) : null}
             </div>

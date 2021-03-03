@@ -80,7 +80,11 @@ export class Landing extends React.Component {
             </p>
           </div>
           <div className="flex flex-col justify-center items-center sm:flex-wrap flex-nowrap relative">
-            <img src={sketch} className="w-full" />
+            <img
+              src={sketch}
+              className="w-full"
+              alt="Sketch by Nicole Miles. Six colourful , cool characters that all shop secondhand"
+            />
             <div className="hidden flex-col sm:flex-row absolute mx-auto">
               <button className="h-6 text-sm px-1 py-0.5 my-1 text-center bg-red-500 text-white rounded italic font-black shadow mx-auto ">
                 Get more for your money
@@ -241,10 +245,19 @@ export class Landing extends React.Component {
               }}
               className="h-36 opacity-70 p-4 hover"
               src={k20logo}
+              alt="King's College, King's 20 Accelerator logo"
             />
-            <img className="h-36 opacity-70 p-4" src={lcflogo} />
+            <img
+              className="h-36 opacity-70 p-4"
+              src={lcflogo}
+              alt="London College of Fashion logo"
+            />
             <div className="w-60 h-36 flex flex-col justify-center items-center content-center">
-              <img className="w-full opacity-80" src={mayorlogo} />
+              <img
+                className="w-full opacity-80"
+                src={mayorlogo}
+                alt="Mayor of London logo"
+              />
               <p className="text-center text-sm leading-none text-gray-400 mt-2">
                 Environment Award finalist 2020
               </p>

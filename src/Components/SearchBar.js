@@ -69,17 +69,13 @@ export class SearchBar extends React.Component {
   render() {
     return (
       <div className="max-w-screen-md mx-auto flex flex-col justify-center">
-        <div>
-          <TopNav toggleMainDisplay={this.props.toggleMainDisplay} />
-        </div>
-
         <div
           className="
                     w-full sm:w-11/12 px-3 lg:px-4 mx-auto h-8 flex flex-row no-wrap sm:mt-4 lg:mt-7"
         >
           <input
             type="text"
-            placeholder='Try "white converse size 7"'
+            placeholder='Try "Denim Jacket"'
             id="searchQuery"
             className="w-full text-center text-sm italic pt-0.5 border border-r-0 rounded-tl-lg rounded-bl-lg"
           ></input>
@@ -89,7 +85,7 @@ export class SearchBar extends React.Component {
                         bg-red-500 w-8 rounded-tr-lg rounded-br-lg
                         p-2"
           >
-            <img classname="" src={search} />
+            <img src={search} />
           </button>
         </div>
 

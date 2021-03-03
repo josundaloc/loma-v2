@@ -1,4 +1,8 @@
 import React from 'react'
+
+import app from '../Firebase'
+import firebase from 'firebase/app'
+
 import 'tailwindcss/tailwind.css'
 import depop from '../assets/depop.png'
 import ebay from '../assets/ebay.png'
@@ -8,20 +12,23 @@ import imagePlaceholder from '../assets/gallery.png'
 import etsy from '../assets/Etsy.png'
 import trashnothing from '../assets/Freecycle.png'
 
-import heart from '../assets/heart.svg'
+import heart from '../assets/heartfull.svg'
 //import './Listing.css';
+
+const db = firebase.firestore()
 
 const truncate100 = (input) =>
   input.length > 100 ? `${input.substring(0, 100)}...` : input
 const truncate55 = (input) =>
   input.length > 55 ? `${input.substring(0, 55)}...` : input
 
-export class Listing extends React.Component {
+export class Favourite extends React.Component {
   constructor(props) {
     super(props)
     this.openWindow = this.openWindow.bind(this)
     this.logo = this.logo.bind(this)
     this.togglePopUp = this.togglePopUp.bind(this)
+    this.removeFavourite = this.removeFavourite.bind(this)
   }
 
   logo() {
@@ -50,6 +57,9 @@ export class Listing extends React.Component {
     this.props.togglePopUp(this.props.listing)
   }
 
+  removeFavourite() {
+    this.props.removeFavourite(this.props.listing)
+  }
   render() {
     return (
       // LISTING ITSELF
@@ -67,7 +77,7 @@ export class Listing extends React.Component {
         >
           <img
             onClick={() => {
-              this.props.addFavourite(this.props.listing)
+              this.props.removeFavourite(this.props.listing)
             }}
             src={heart}
             className="
@@ -96,17 +106,15 @@ export class Listing extends React.Component {
             className="w-full rounded
                     "
           >
-            {this.props.gridView === 'Image + Description' ? (
-              <p
-                className=" overflow-ellipsis leading-tight
+            <p
+              className=" overflow-ellipsis leading-tight
                            text-sm font-bold text-gray-600 mb-2
                            p-0 m-0 break-words
                            "
-              >
-                {/* {truncate55(this.props.listing.title)} */}
-                {this.props.listing.title}
-              </p>
-            ) : null}
+            >
+              {truncate55(this.props.listing.title)}
+              {/* {this.props.listing.title} */}
+            </p>
 
             <div
               className="
